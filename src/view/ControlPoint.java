@@ -71,10 +71,6 @@ public class ControlPoint implements Shape {
 		}
 	}
 
-	public Cardinal getCardinal() {
-		return cardinal;
-	}
-
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(color);
