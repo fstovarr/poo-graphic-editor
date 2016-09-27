@@ -7,8 +7,8 @@ import view.BoundBox;
 
 public class Line extends GeomFigure {
 
-	public Line(BoundBox boundBox, Color color) {
-		super(boundBox, color);
+	public Line(BoundBox boundBox, Color color, int thickness) {
+		super(boundBox, color, thickness);
 	}
 
 	@Override
@@ -19,9 +19,6 @@ public class Line extends GeomFigure {
 	@Override
 	public void doPaint(Graphics g) {
 		BoundBox bbox = getBoundBox();
-		g.setColor(getColor());
-
-		// draw line
 		g.drawLine(bbox.x, bbox.y, bbox.x + bbox.width, bbox.y + bbox.height);
 	}
 }

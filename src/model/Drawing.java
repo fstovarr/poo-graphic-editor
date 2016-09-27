@@ -16,22 +16,25 @@ public class Drawing {
 	}
 
 	public void testFigures() {
-		Line line = new Line(new BoundBox(300, 310, 100, 100), Color.BLUE);
+		Line line = new Line(new BoundBox(300, 310, 100, 100), Color.BLUE, 14);
 		line.setSelected(true);
 		addFigure(line);
 
-		Ellipse elli = new Ellipse(new BoundBox(30, 30, 100, 100), Color.BLACK);
+		Ellipse elli = new Ellipse(new BoundBox(30, 30, 100, 100), Color.BLACK, 14, Color.CYAN);
 		elli.setSelected(true);
 		addFigure(elli);
 
-		Rectangle rect = new Rectangle(new BoundBox(400, 30, 100, 100), Color.RED);
+		Rectangle rect = new Rectangle(new BoundBox(400, 30, 100, 100), Color.RED, 4, Color.YELLOW);
 		rect.setSelected(true);
 		addFigure(rect);
+
+		Rectangle rect2 = new Rectangle(new BoundBox(600, 30, 100, 100), Color.RED, 14, Color.YELLOW);
+		rect2.setSelected(true);
+		addFigure(rect2);
 
 		Text text = new Text(new BoundBox(200, 200, 1000, 30), "Hola mundo", Color.GREEN);
 		text.setSelected(true);
 		addFigure(text);
-
 	}
 
 	public void addFigure(final Figure figure) {
@@ -41,5 +44,4 @@ public class Drawing {
 	public Iterator<Figure> getIterator() {
 		return figures.iterator();
 	}
-
 }

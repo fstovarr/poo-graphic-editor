@@ -7,16 +7,15 @@ import view.BoundBox;
 
 public class Ellipse extends ClosedFigure {
 
-	public Ellipse(BoundBox boundBox, Color color) {
-		super(boundBox, color);
+	public Ellipse(BoundBox boundBox, Color color, int thicknes, Color fillColor) {
+		super(boundBox, color, thicknes, fillColor);
 	}
 
 	@Override
 	public void doPaint(Graphics g) {
 		BoundBox bbox = getBoundBox();
-
-		g.setColor(getColor());
 		g.drawOval(bbox.x, bbox.y, bbox.width, bbox.height);
-		System.out.println("Corrido2");
+		g.setColor(getFillColor());
+		g.fillOval(bbox.x, bbox.y, bbox.width, bbox.height);
 	}
 }

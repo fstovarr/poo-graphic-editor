@@ -22,7 +22,7 @@ public class ControlPoint implements Shape {
 		this.bbox = bbox;
 		this.cardinal = cardinal;
 		position = new Point(bbox.x - SIZE / 2, bbox.y - SIZE / 2);
-		setPosition(cardinal);
+		setPosition();
 	}
 
 	public Cursor getCursor() {
@@ -30,11 +30,11 @@ public class ControlPoint implements Shape {
 		return cursor;
 	}
 
-	private void setPosition(Cardinal cardinal) {
+	private void setPosition() {
 		switch (cardinal) {
 		case NW:
 			break;
-			
+
 		case N:
 			position.x += bbox.width / 2;
 			break;

@@ -7,15 +7,16 @@ import view.BoundBox;
 
 public class Rectangle extends ClosedFigure {
 
-	public Rectangle(BoundBox boundBox, Color color) {
-		super(boundBox, color);
+	public Rectangle(BoundBox boundBox, Color color, int thickness, Color fillColor) {
+		super(boundBox, color, thickness, fillColor);
 	}
-	
+
 	@Override
 	public void doPaint(Graphics g) {
 		BoundBox bbox = getBoundBox();
-		g.setColor(getColor());
-		// draw rect
 		g.drawRect(bbox.x, bbox.y, bbox.width, bbox.height);
+
+		g.setColor(getFillColor());
+		g.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
 	}
 }

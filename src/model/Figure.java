@@ -1,12 +1,14 @@
 package model;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import view.BoundBox;
 
 public abstract class Figure implements Shape {
-	private BoundBox boundBox;
+	private BoundBox boundBox, boxOriginal;
 	private Color color;
 	private boolean selected;
 
@@ -19,6 +21,9 @@ public abstract class Figure implements Shape {
 		if (needsNormalization()) {
 			this.boundBox.normalize();
 		}
+		
+		this.boxOriginal = new BoundBox(boundBox.x, boundBox.y, boundBox.width, boundBox.height);
+
 	}
 
 	protected abstract void doPaint(Graphics g);
@@ -51,12 +56,27 @@ public abstract class Figure implements Shape {
 		this.boundBox = boundBox;
 	}
 
-	// Template Method
-	public final void paint(Graphics g) {
-		doPaint(g);
+	@Override
+	public void paint(Graphics g) {
+		int thickness = 0;
+
+		Graphics2D graphics = (Graphics2D) g;
+		graphics.setColor(color);
+
+		if (this instanceof GeomFigure) {
+			thickness = ((GeomFigure) this).getThickness();
+			graphics.setStroke(new BasicStroke(thickness));
+		}
+
+		doPaint(graphics);
+
+		// boxOriginal.x = boundBox.y + thickness;
+		//boundBox.y = boxOriginal.y + 100;
+
+		System.out.println("Paint By = " + boxOriginal.y);
 
 		if (isSelected()) {
-			boundBox.paint(g);
+			boundBox.paint(graphics);
 		}
 	}
 }
