@@ -14,6 +14,10 @@ public class BoundBox extends Rectangle implements Shape {
 	private static final Color color = Color.LIGHT_GRAY;
 	private static final int thickness = 1;
 
+	public BoundBox(BoundBox box) {
+		this(box.x, box.y, box.width, box.height);
+	}
+
 	public BoundBox(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		cPoint = new ControlPoint[ControlPoint.Cardinal.values().length];
@@ -40,6 +44,7 @@ public class BoundBox extends Rectangle implements Shape {
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.setStroke(new BasicStroke(thickness));
 		graphics.setColor(color);
+		// graphics.drawRect(box.x, box.y, box.width, box.height);
 		graphics.drawRect(x, y, width, height);
 
 		for (ControlPoint point : cPoint) {

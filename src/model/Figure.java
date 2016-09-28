@@ -14,16 +14,18 @@ public abstract class Figure implements Shape {
 
 	public Figure(BoundBox boundBox, Color color) {
 		super();
+		if (color == null) {
+			color = Color.BLACK;
+		}
+
 		this.boundBox = boundBox;
 		this.color = color;
+		boxOriginal = new BoundBox(boundBox);
 
 		// Template Method
 		if (needsNormalization()) {
 			this.boundBox.normalize();
 		}
-		
-		this.boxOriginal = new BoundBox(boundBox.x, boundBox.y, boundBox.width, boundBox.height);
-
 	}
 
 	protected abstract void doPaint(Graphics g);
@@ -52,8 +54,8 @@ public abstract class Figure implements Shape {
 		return boundBox;
 	}
 
-	public void setBoundBox(BoundBox boundBox) {
-		this.boundBox = boundBox;
+	public BoundBox getNormalizedBoundBox() {
+		return boxOriginal;
 	}
 
 	@Override
@@ -70,13 +72,13 @@ public abstract class Figure implements Shape {
 
 		doPaint(graphics);
 
-		// boxOriginal.x = boundBox.y + thickness;
-		//boundBox.y = boxOriginal.y + 100;
-
-		System.out.println("Paint By = " + boxOriginal.y);
+		boxOriginal.x = boundBox.x - thickness / 2 - 2;
+		boxOriginal.y = boundBox.y - thickness / 2 - 2;
+		boxOriginal.width = boundBox.width + thickness + 2;
+		boxOriginal.height = boundBox.height + thickness + 2;
 
 		if (isSelected()) {
-			boundBox.paint(graphics);
+			getNormalizedBoundBox().paint(graphics);
 		}
 	}
 }

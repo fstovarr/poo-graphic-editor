@@ -41,5 +41,6 @@ public class App {
 
 	public void addFigure(Figure figure) {
 		model.addFigure(figure);
+		view.repaintCanvas();
 	}
 }
