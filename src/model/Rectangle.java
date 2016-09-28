@@ -16,7 +16,9 @@ public class Rectangle extends ClosedFigure {
 		BoundBox bbox = getBoundBox();
 		g.drawRect(bbox.x, bbox.y, bbox.width, bbox.height);
 
+		int thickness = getThickness();
 		g.setColor(getFillColor());
-		g.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
+		g.fillRect(bbox.x + thickness / 2 + 1, bbox.y + thickness / 2 + 1, bbox.width - thickness,
+				bbox.height - thickness);
 	}
 }

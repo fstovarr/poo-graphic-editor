@@ -6,7 +6,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 
 import view.BoundBox;
-import view.ControlPoint;
 
 public class Text extends Figure {
 	private String text;
@@ -28,7 +27,7 @@ public class Text extends Figure {
 		box.width = fm.stringWidth(text);
 		box.height = fm.getHeight();
 
-		int dim = ControlPoint.SIZE / 2;
+		int dim = BoundBox.getSizeControlPoint() / 2;
 		g.clipRect(box.x - dim, box.y - dim, box.width + dim * 2, box.height + dim * 2);
 		g.drawString(text, box.x, box.y + fm.getAscent());
 	}

@@ -39,8 +39,17 @@ public class App {
 		return app;
 	}
 
-	public void addFigure(Figure figure) {
+	public void addFigure(final Figure figure) {
 		model.addFigure(figure);
+		repaintCanvas();
+	}
+
+	public void removeFigure(final Figure figure) {
+		model.removeFigure(figure);
+		repaintCanvas();
+	}
+
+	public void repaintCanvas() {
 		view.repaintCanvas();
 	}
 }

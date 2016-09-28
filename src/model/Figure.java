@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import view.BoundBox;
 
 public abstract class Figure implements Shape {
-	private BoundBox boundBox, boxOriginal;
+	private BoundBox boundBox, normalizedBoundBox;
 	private Color color;
 	private boolean selected;
 
@@ -20,7 +20,7 @@ public abstract class Figure implements Shape {
 
 		this.boundBox = boundBox;
 		this.color = color;
-		boxOriginal = new BoundBox(boundBox);
+		normalizedBoundBox = new BoundBox(boundBox);
 
 		// Template Method
 		if (needsNormalization()) {
@@ -55,7 +55,7 @@ public abstract class Figure implements Shape {
 	}
 
 	public BoundBox getNormalizedBoundBox() {
-		return boxOriginal;
+		return normalizedBoundBox;
 	}
 
 	@Override
@@ -72,10 +72,10 @@ public abstract class Figure implements Shape {
 
 		doPaint(graphics);
 
-		boxOriginal.x = boundBox.x - thickness / 2 - 2;
-		boxOriginal.y = boundBox.y - thickness / 2 - 2;
-		boxOriginal.width = boundBox.width + thickness + 2;
-		boxOriginal.height = boundBox.height + thickness + 2;
+		normalizedBoundBox.x = boundBox.x - thickness / 2;
+		normalizedBoundBox.y = boundBox.y - thickness / 2;
+		normalizedBoundBox.width = boundBox.width + thickness;
+		normalizedBoundBox.height = boundBox.height + thickness;
 
 		if (isSelected()) {
 			getNormalizedBoundBox().paint(graphics);

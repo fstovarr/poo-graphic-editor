@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import model.Shape;
@@ -42,13 +43,84 @@ public class BoundBox extends Rectangle implements Shape {
 		}
 
 		Graphics2D graphics = (Graphics2D) g;
-		graphics.setStroke(new BasicStroke(thickness));
+		graphics.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,
+				new float[] { 10, 2 }, 0.0f));
+
 		graphics.setColor(color);
-		// graphics.drawRect(box.x, box.y, box.width, box.height);
 		graphics.drawRect(x, y, width, height);
 
 		for (ControlPoint point : cPoint) {
 			point.paint(g);
+		}
+	}
+
+	public static int getSizeControlPoint() {
+		return ControlPoint.SIZE;
+	}
+
+	private static class ControlPoint implements Shape {
+		private static final Color color = Color.BLUE;
+		public static final int SIZE = 7;
+		private final BoundBox bbox;
+		private final Cardinal cardinal;
+		private final Point position;
+
+		public static enum Cardinal {
+			NW, N, NE, E, SE, S, SW, W;
+		}
+
+		public ControlPoint(final BoundBox bbox, final Cardinal cardinal) {
+			this.bbox = bbox;
+			this.cardinal = cardinal;
+			position = new Point(bbox.x - SIZE / 2, bbox.y - SIZE / 2);
+			setPosition();
+		}
+
+		private void setPosition() {
+			switch (cardinal) {
+			case NW:
+				break;
+
+			case N:
+				position.x += bbox.width / 2;
+				break;
+
+			case NE:
+				position.x += bbox.width;
+				break;
+
+			case W:
+				position.y += bbox.height / 2;
+				break;
+
+			case E:
+				position.x += bbox.width;
+				position.y += bbox.height / 2;
+				break;
+
+			case SW:
+				position.y += bbox.height;
+				break;
+
+			case S:
+				position.y += bbox.height;
+				position.x += bbox.width / 2;
+				break;
+
+			case SE:
+				position.y += bbox.height;
+				position.x += bbox.width;
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		@Override
+		public void paint(Graphics g) {
+			g.setColor(color);
+			g.fillRect(position.x, position.y, SIZE, SIZE);
 		}
 	}
 }

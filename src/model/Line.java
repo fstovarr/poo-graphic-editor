@@ -6,12 +6,8 @@ import java.awt.Graphics;
 import view.BoundBox;
 
 public class Line extends GeomFigure {
-	private BoundBox normalized;
-
 	public Line(BoundBox boundBox, Color color, int thickness) {
 		super(boundBox, color, thickness);
-		normalized = new BoundBox(boundBox);
-		normalized.normalize();
 	}
 
 	@Override
@@ -27,6 +23,8 @@ public class Line extends GeomFigure {
 
 	@Override
 	public BoundBox getNormalizedBoundBox() {
-		return normalized;
+		BoundBox box = super.getNormalizedBoundBox();
+		box.normalize();
+		return box;
 	}
 }

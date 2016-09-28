@@ -9,9 +9,11 @@ public abstract class ClosedFigure extends GeomFigure {
 
 	public ClosedFigure(BoundBox boundBox, Color color, int thicknes, Color fillColor) {
 		super(boundBox, color, thicknes);
+
 		if (fillColor == null) {
-			fillColor = Color.WHITE;
+			fillColor = new Color(255, 255, 255, 0);
 		}
+
 		this.fillColor = fillColor;
 	}
 

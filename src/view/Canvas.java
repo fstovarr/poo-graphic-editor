@@ -13,7 +13,7 @@ import model.Figure;
 
 public class Canvas extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private Tool activeTool = new RectangleCreationTool();
+	private Tool activeTool = new SelectionTool();
 
 	public Canvas() {
 		super();
@@ -39,5 +39,9 @@ public class Canvas extends JPanel {
 		while (iterator.hasNext()) {
 			iterator.next().paint(g);
 		}
+	}
+
+	protected void setActiveTool(Tool activeTool) {
+		this.activeTool = activeTool;
 	}
 }

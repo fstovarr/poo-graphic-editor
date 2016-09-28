@@ -41,6 +41,10 @@ public class Drawing {
 		figures.add(figure);
 	}
 
+	public void removeFigure(final Figure figure) {
+		figures.remove(figure);
+	}
+
 	public Iterator<Figure> getIterator() {
 		return figures.iterator();
 	}
