@@ -54,10 +54,10 @@ public class View extends JFrame {
 		JToolBar bar = new JToolBar("Herramientas", JToolBar.VERTICAL);
 
 		ToolButton selectionButton = new ToolButton("Selección", new SelectionTool());
-		ToolButton lineButton = new ToolButton("Linea", new LineCreationTool());
-		ToolButton rectangleButton = new ToolButton("Rectángulo", new RectangleCreationTool());
-		ToolButton ellipseButton = new ToolButton("Elipse", new EllipseCreationTool());
-		ToolButton textButton = new ToolButton("Texto", new TextCreationTool());
+		ToolButton lineButton = new ToolButton("Linea", new LineCreationTool(""));
+		ToolButton rectangleButton = new ToolButton("Rectángulo", new RectangleCreationTool(""));
+		ToolButton ellipseButton = new ToolButton("Elipse", new EllipseCreationTool(""));
+		ToolButton textButton = new ToolButton("Texto", new TextCreationTool(""));
 		ToolButton eliminationButton = new ToolButton("Borrar", new EliminationTool());
 
 		ArrayList<ToolButton> buttons = new ArrayList<>();

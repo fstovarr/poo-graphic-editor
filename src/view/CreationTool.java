@@ -8,6 +8,10 @@ import model.Figure;
 
 public abstract class CreationTool extends Tool {
 
+	public CreationTool(String iconPath) {
+		super(iconPath);
+	}
+
 	protected abstract Figure createFigure(Point ptPressed, Point ptReleased);
 
 	@Override

@@ -7,6 +7,10 @@ import model.Figure;
 
 public class EllipseCreationTool extends CreationTool {
 
+	public EllipseCreationTool(String iconPath) {
+		super(iconPath);
+	}
+
 	@Override
 	protected Figure createFigure(Point ptPressed, Point ptReleased) {
 		Ellipse ellipse = new Ellipse(

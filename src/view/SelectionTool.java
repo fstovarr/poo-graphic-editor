@@ -8,6 +8,11 @@ import mediator.App;
 import model.Figure;
 
 public class SelectionTool extends Tool {
+	
+	public SelectionTool() {
+		super("font.png");
+	}
+
 	private Iterator<Figure> iterator;
 
 	@Override

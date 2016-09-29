@@ -7,6 +7,11 @@ import model.Rectangle;
 
 public class RectangleCreationTool extends CreationTool {
 
+	public RectangleCreationTool(String iconPath) {
+		super(iconPath);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	protected Figure createFigure(Point ptPressed, Point ptReleased) {
 		Rectangle rectangle = new Rectangle(
