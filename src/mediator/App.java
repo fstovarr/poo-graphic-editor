@@ -1,5 +1,6 @@
 package mediator;
 
+import java.awt.Point;
 import java.util.Iterator;
 
 import model.Drawing;
@@ -51,5 +52,10 @@ public class App {
 
 	public void repaintCanvas() {
 		view.repaintCanvas();
+	}
+
+	public void selectFigures(Point p1, Point p2) {
+		model.select(p1, p2);
+		repaintCanvas();
 	}
 }

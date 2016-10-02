@@ -1,22 +1,20 @@
 package view;
 
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 
 import mediator.App;
 import model.Figure;
 
-public abstract class CreationTool extends Tool {
+public abstract class CreationTool extends InteractiveTool {
 
-	public CreationTool(String iconPath) {
-		super(iconPath);
+	public CreationTool(String iconPath, String name) {
+		super(iconPath, name);
 	}
 
 	protected abstract Figure createFigure(Point ptPressed, Point ptReleased);
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		super.mouseReleased(e);
+	protected void processMouse() {
 		Point ptPressed = getPtPressed();
 		Point ptReleased = getPtReleased();
 
@@ -28,6 +26,7 @@ public abstract class CreationTool extends Tool {
 			// 3. Check figure
 			if (figure != null) {
 				// 4. Add figure to model
+				figure.setSelected(true);
 				App.getInstance().addFigure(figure);
 			}
 		}

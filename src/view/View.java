@@ -4,14 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+
+import org.reflections.Reflections;
 
 public class View extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -53,20 +57,22 @@ public class View extends JFrame {
 	private JToolBar createToolBar() {
 		JToolBar bar = new JToolBar("Herramientas", JToolBar.VERTICAL);
 
-		ToolButton selectionButton = new ToolButton("Selección", new SelectionTool());
-		ToolButton lineButton = new ToolButton("Linea", new LineCreationTool(""));
-		ToolButton rectangleButton = new ToolButton("Rectángulo", new RectangleCreationTool(""));
-		ToolButton ellipseButton = new ToolButton("Elipse", new EllipseCreationTool(""));
-		ToolButton textButton = new ToolButton("Texto", new TextCreationTool(""));
-		ToolButton eliminationButton = new ToolButton("Borrar", new EliminationTool());
-
 		ArrayList<ToolButton> buttons = new ArrayList<>();
-		buttons.add(selectionButton);
-		buttons.add(lineButton);
-		buttons.add(rectangleButton);
-		buttons.add(ellipseButton);
-		buttons.add(textButton);
-		buttons.add(eliminationButton);
+
+		try {
+			Reflections reflections = new Reflections(this.getClass().getPackage());
+			Set<Class<? extends ItemToolbar>> classes = reflections.getSubTypesOf(ItemToolbar.class);
+
+			Iterator<Class<? extends ItemToolbar>> iterator = classes.iterator();
+			while (iterator.hasNext()) {
+				Class<? extends ItemToolbar> itemToolbar = iterator.next();
+				if (!Modifier.isAbstract(itemToolbar.getModifiers())) {
+					buttons.add(new ToolButton(itemToolbar.newInstance()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		Iterator<ToolButton> iterator = buttons.iterator();
 		while (iterator.hasNext()) {
@@ -74,7 +80,9 @@ public class View extends JFrame {
 			selectedTool.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					canvas.setActiveTool(selectedTool.getTool());
+					if (selectedTool.getTool() instanceof InteractiveTool) {
+						canvas.setActiveTool((InteractiveTool) selectedTool.getTool());
+					}
 
 					for (ToolButton button : buttons) {
 						if (button != selectedTool) {
@@ -94,14 +102,19 @@ public class View extends JFrame {
 
 	private class ToolButton extends JToggleButton {
 		private static final long serialVersionUID = 1L;
-		private Tool tool;
+		private ItemToolbar tool;
 
-		public ToolButton(String title, Tool tool) {
-			super(title);
+		public ToolButton(ItemToolbar tool) {
 			this.tool = tool;
+
+			if (tool.getIcon() == null || tool.equals(null)) {
+				setText(tool.getName());
+			} else {
+				setIcon(tool.getIcon());
+			}
 		}
 
-		public Tool getTool() {
+		public ItemToolbar getTool() {
 			return tool;
 		}
 	}

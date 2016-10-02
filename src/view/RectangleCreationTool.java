@@ -7,17 +7,14 @@ import model.Rectangle;
 
 public class RectangleCreationTool extends CreationTool {
 
-	public RectangleCreationTool(String iconPath) {
-		super(iconPath);
-		// TODO Auto-generated constructor stub
+	public RectangleCreationTool() {
+		super("resources/bwicons/rectangle1.png", "Rectángulo");
 	}
 
 	@Override
 	protected Figure createFigure(Point ptPressed, Point ptReleased) {
-		Rectangle rectangle = new Rectangle(
+		return new Rectangle(
 				new BoundBox(ptPressed.x, ptPressed.y, ptReleased.x - ptPressed.x, ptReleased.y - ptPressed.y), null, 1,
 				null);
-		rectangle.setSelected(true);
-		return rectangle;
 	}
 }

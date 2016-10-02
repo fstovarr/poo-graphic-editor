@@ -13,7 +13,7 @@ import model.Figure;
 
 public class Canvas extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private Tool activeTool = new SelectionTool();
+	private InteractiveTool activeTool = new SelectionTool();
 
 	public Canvas() {
 		super();
@@ -23,6 +23,7 @@ public class Canvas extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				activeTool.mousePressed(e);
+
 			}
 
 			@Override
@@ -41,7 +42,7 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	protected void setActiveTool(Tool activeTool) {
+	protected void setActiveTool(InteractiveTool activeTool) {
 		this.activeTool = activeTool;
 	}
 }
