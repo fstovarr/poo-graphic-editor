@@ -4,7 +4,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-public abstract class ActionTool implements ItemToolbar {
+public abstract class ActionTool implements Tool {
 	private ImageIcon icon;
 	private String name;
 
@@ -13,7 +13,7 @@ public abstract class ActionTool implements ItemToolbar {
 			URL resource = this.getClass().getClassLoader().getResource(iconPath);
 			if (resource != null) {
 				icon = new ImageIcon(resource);
-				icon = ItemToolbar.resizeIcon(new ImageIcon(resource));
+				icon = Tool.resizeIcon(new ImageIcon(resource));
 			} else {
 				throw new Exception("Icon don't found :(");
 			}
@@ -23,6 +23,8 @@ public abstract class ActionTool implements ItemToolbar {
 			this.name = name;
 		}
 	}
+
+	public abstract void applyTool();
 
 	@Override
 	public ImageIcon getIcon() {

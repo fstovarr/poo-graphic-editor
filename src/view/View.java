@@ -61,11 +61,11 @@ public class View extends JFrame {
 
 		try {
 			Reflections reflections = new Reflections(this.getClass().getPackage());
-			Set<Class<? extends ItemToolbar>> classes = reflections.getSubTypesOf(ItemToolbar.class);
+			Set<Class<? extends Tool>> classes = reflections.getSubTypesOf(Tool.class);
 
-			Iterator<Class<? extends ItemToolbar>> iterator = classes.iterator();
+			Iterator<Class<? extends Tool>> iterator = classes.iterator();
 			while (iterator.hasNext()) {
-				Class<? extends ItemToolbar> itemToolbar = iterator.next();
+				Class<? extends Tool> itemToolbar = iterator.next();
 				if (!Modifier.isAbstract(itemToolbar.getModifiers())) {
 					buttons.add(new ToolButton(itemToolbar.newInstance()));
 				}
@@ -80,14 +80,18 @@ public class View extends JFrame {
 			selectedTool.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (selectedTool.getTool() instanceof InteractiveTool) {
-						canvas.setActiveTool((InteractiveTool) selectedTool.getTool());
-					}
+					Tool tool = selectedTool.getTool();
+					if (tool instanceof InteractiveTool) {
+						int index = buttons.indexOf(new ToolButton(canvas.getActiveTool()));
 
-					for (ToolButton button : buttons) {
-						if (button != selectedTool) {
-							button.setSelected(false);
+						if (index != -1) {
+							((ToolButton) buttons.get(index)).setSelected(false);
 						}
+
+						canvas.setActiveTool((InteractiveTool) tool);
+					} else if (tool instanceof ActionTool) {
+						((ActionTool) tool).applyTool();
+						selectedTool.setSelected(false);
 					}
 				}
 			});
@@ -102,9 +106,9 @@ public class View extends JFrame {
 
 	private class ToolButton extends JToggleButton {
 		private static final long serialVersionUID = 1L;
-		private ItemToolbar tool;
+		private Tool tool;
 
-		public ToolButton(ItemToolbar tool) {
+		public ToolButton(Tool tool) {
 			this.tool = tool;
 
 			if (tool.getIcon() == null || tool.equals(null)) {
@@ -114,8 +118,19 @@ public class View extends JFrame {
 			}
 		}
 
-		public ItemToolbar getTool() {
+		public Tool getTool() {
 			return tool;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == (ToolButton) obj) {
+				return true;
+			} else if (this.tool == ((ToolButton) obj).getTool()) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 }

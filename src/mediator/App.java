@@ -45,8 +45,8 @@ public class App {
 		repaintCanvas();
 	}
 
-	public void removeFigure(final Figure figure) {
-		model.removeFigure(figure);
+	public void deleteSelectedFigures() {
+		model.deleteSelected();
 		repaintCanvas();
 	}
 
@@ -54,7 +54,12 @@ public class App {
 		view.repaintCanvas();
 	}
 
-	public void selectFigures(Point p1, Point p2) {
+	public void selectFigure(Figure figure) {
+		model.deselectAll();
+		model.select(figure);
+	}
+
+	public void selectFigure(Point p1, Point p2) {
 		model.select(p1, p2);
 		repaintCanvas();
 	}

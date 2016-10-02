@@ -4,7 +4,7 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
-public interface ItemToolbar {
+public interface Tool {
 	static final int ICON_SIZE = 32;
 
 	ImageIcon getIcon();

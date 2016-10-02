@@ -7,7 +7,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-public abstract class InteractiveTool extends MouseAdapter implements ItemToolbar {
+public abstract class InteractiveTool extends MouseAdapter implements Tool {
 	private ImageIcon icon;
 	private Point ptPressed;
 	private Point ptReleased;
@@ -18,7 +18,7 @@ public abstract class InteractiveTool extends MouseAdapter implements ItemToolba
 			URL resource = this.getClass().getClassLoader().getResource(iconPath);
 			if (resource != null) {
 				// RESIZE ICON
-				icon = ItemToolbar.resizeIcon(new ImageIcon(resource));
+				icon = Tool.resizeIcon(new ImageIcon(resource));
 			} else {
 				throw new Exception("Icon don't found :(");
 			}

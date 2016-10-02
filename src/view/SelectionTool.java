@@ -14,6 +14,6 @@ public class SelectionTool extends InteractiveTool {
 	protected void processMouse() {
 		Point ptPressed = getPtPressed();
 		Point ptReleased = getPtReleased();
-		App.getInstance().selectFigures(ptPressed, ptReleased);
+		App.getInstance().selectFigure(ptPressed, ptReleased);
 	}
 }

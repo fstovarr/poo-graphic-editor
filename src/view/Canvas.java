@@ -23,7 +23,6 @@ public class Canvas extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				activeTool.mousePressed(e);
-
 			}
 
 			@Override
@@ -44,5 +43,9 @@ public class Canvas extends JPanel {
 
 	protected void setActiveTool(InteractiveTool activeTool) {
 		this.activeTool = activeTool;
+	}
+
+	protected InteractiveTool getActiveTool() {
+		return activeTool;
 	}
 }

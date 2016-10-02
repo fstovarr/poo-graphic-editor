@@ -81,4 +81,9 @@ public abstract class Figure implements Shape {
 			getNormalizedBoundBox().paint(graphics);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 }
