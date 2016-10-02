@@ -60,6 +60,7 @@ public class App {
 	}
 
 	public void selectFigure(Point p1, Point p2) {
+		model.deselectAll();
 		model.select(p1, p2);
 		repaintCanvas();
 	}

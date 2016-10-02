@@ -56,6 +56,7 @@ public class View extends JFrame {
 
 	private JToolBar createToolBar() {
 		JToolBar bar = new JToolBar("Herramientas", JToolBar.VERTICAL);
+		System.out.println("Create toolbar");
 
 		ArrayList<ToolButton> buttons = new ArrayList<>();
 
@@ -124,7 +125,9 @@ public class View extends JFrame {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == (ToolButton) obj) {
+			if (!(obj instanceof ToolButton)) {
+				return false;
+			} else if (this == (ToolButton) obj) {
 				return true;
 			} else if (this.tool == ((ToolButton) obj).getTool()) {
 				return true;

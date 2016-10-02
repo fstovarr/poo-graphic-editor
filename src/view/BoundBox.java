@@ -123,4 +123,8 @@ public class BoundBox extends Rectangle implements Shape {
 			g.fillRect(position.x, position.y, SIZE, SIZE);
 		}
 	}
+
+	public static boolean isEmptyBoundBox(Point p1, Point p2) {
+		return !(Math.abs((p2.x - p1.x)) >= getSizeControlPoint() && Math.abs((p2.y - p1.y)) >= getSizeControlPoint());
+	}
 }

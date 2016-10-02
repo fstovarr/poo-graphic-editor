@@ -18,11 +18,9 @@ public abstract class CreationTool extends InteractiveTool {
 		Point ptPressed = getPtPressed();
 		Point ptReleased = getPtReleased();
 
-		int min = (BoundBox.getSizeControlPoint());
-
 		// TEMPLATE
 		// 1. Non empty bounding box
-		if (Math.abs((ptReleased.x - ptPressed.x)) >= min && Math.abs((ptReleased.y - ptPressed.y)) >= min) {
+		if (!BoundBox.isEmptyBoundBox(ptPressed, ptReleased)) {
 			// 2. Create figure
 			Figure figure = createFigure(ptPressed, ptReleased);
 			// 3. Check figure

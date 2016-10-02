@@ -41,12 +41,12 @@ public class Drawing {
 	public void select(Point p1, Point p2) {
 		ListIterator<Figure> iterator = figures.listIterator(figures.size());
 
-		if (p1.equals(p2)) {
+		if (BoundBox.isEmptyBoundBox(p1, p2)) {
 			while (iterator.hasPrevious()) {
 				Figure figure = iterator.previous();
 				BoundBox boxFigure = figure.getNormalizedBoundBox();
 
-				if (boxFigure.contains(p1) || boxFigure.contains(p2)) {
+				if (boxFigure.contains(p1)) {
 					figure.setSelected(true);
 					selectedFigures.add(figure);
 					break;
