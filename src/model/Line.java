@@ -1,7 +1,7 @@
 package model;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import view.BoundBox;
 
@@ -16,7 +16,7 @@ public class Line extends GeomFigure {
 	}
 
 	@Override
-	public void doPaint(Graphics g) {
+	public void doPaint(Graphics2D g) {
 		BoundBox bbox = getBoundBox();
 		g.drawLine(bbox.x, bbox.y, bbox.x + bbox.width, bbox.y + bbox.height);
 	}

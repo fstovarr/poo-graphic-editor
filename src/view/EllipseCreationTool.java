@@ -8,7 +8,7 @@ import model.Figure;
 public class EllipseCreationTool extends CreationTool {
 
 	public EllipseCreationTool() {
-		super("resources/bwicons/ellipse2.png", "Elipse");
+		super("resources/bwicons/ellipse1.png", "Elipse");
 	}
 
 	@Override

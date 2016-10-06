@@ -3,7 +3,7 @@ package model;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import view.BoundBox;
 
@@ -18,7 +18,7 @@ public class Text extends Figure {
 	}
 
 	@Override
-	protected void doPaint(Graphics g) {
+	protected void doPaint(Graphics2D g) {
 		BoundBox box = getBoundBox();
 		g.setFont(font);
 		g.setColor(getColor());
@@ -26,9 +26,10 @@ public class Text extends Figure {
 		FontMetrics fm = g.getFontMetrics(font);
 		box.width = fm.stringWidth(text);
 		box.height = fm.getHeight();
-
+		
 		int dim = BoundBox.getSizeControlPoint() / 2;
-		g.clipRect(box.x - dim, box.y - dim, box.width + dim * 2, box.height + dim * 2);
+		g.setClip(box.x - dim, box.y - dim, box.width + dim * 2, box.height + dim * 2);
 		g.drawString(text, box.x, box.y + fm.getAscent());
+		g.setClip(null);
 	}
 }

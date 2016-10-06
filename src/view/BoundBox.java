@@ -2,7 +2,6 @@ package view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -37,7 +36,7 @@ public class BoundBox extends Rectangle implements Shape {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics2D g) {
 		for (int i = 0; i < cPoint.length; i++) {
 			cPoint[i] = new ControlPoint(this, ControlPoint.Cardinal.values()[i]);
 		}
@@ -118,7 +117,7 @@ public class BoundBox extends Rectangle implements Shape {
 		}
 
 		@Override
-		public void paint(Graphics g) {
+		public void paint(Graphics2D g) {
 			g.setColor(color);
 			g.fillRect(position.x, position.y, SIZE, SIZE);
 		}

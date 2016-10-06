@@ -1,7 +1,7 @@
 package model;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import view.BoundBox;
 
@@ -12,7 +12,7 @@ public class Rectangle extends ClosedFigure {
 	}
 
 	@Override
-	public void doPaint(Graphics g) {
+	public void doPaint(Graphics2D g) {
 		BoundBox bbox = getBoundBox();
 		g.drawRect(bbox.x, bbox.y, bbox.width, bbox.height);
 

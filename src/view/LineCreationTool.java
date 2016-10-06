@@ -7,7 +7,7 @@ import model.Line;
 
 public class LineCreationTool extends CreationTool {
 	public LineCreationTool() {
-		super("resources/bwicons/line1.png", "Línea");
+		super("resources/bwicons/line1.png", "Line Creation");
 	}
 
 	@Override

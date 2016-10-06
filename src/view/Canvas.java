@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class Canvas extends JPanel {
 		super.paint(g);
 		Iterator<Figure> iterator = App.getInstance().getIterator();
 		while (iterator.hasNext()) {
-			iterator.next().paint(g);
+			iterator.next().paint((Graphics2D) g);
 		}
 	}
 

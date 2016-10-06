@@ -7,7 +7,7 @@ import mediator.App;
 public class SelectionTool extends InteractiveTool {
 
 	public SelectionTool() {
-		super("resources/bwicons/selection1.png", "Seleccion");
+		super("resources/bwicons/selection1.png", "Selection Creation");
 	}
 
 	@Override

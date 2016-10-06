@@ -1,7 +1,7 @@
 package model;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public interface Shape {
-	void paint(Graphics g);
+	void paint(Graphics2D g);
 }

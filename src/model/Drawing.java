@@ -30,6 +30,11 @@ public class Drawing {
 		return figures.iterator();
 	}
 
+	public void clear() {
+		figures.clear();
+		selectedFigures.clear();
+	}
+
 	public void deselectAll() {
 		for (Figure figure : figures) {
 			figure.setSelected(false);
@@ -86,6 +91,13 @@ public class Drawing {
 		while (iSelected.hasNext()) {
 			removeFigure(iSelected.next());
 			iSelected.remove();
+		}
+	}
+
+	public void selectAll() {
+		for (Figure figure : figures) {
+			figure.setSelected(true);
+			selectedFigures.add(figure);
 		}
 	}
 }

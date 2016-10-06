@@ -8,7 +8,7 @@ import model.Rectangle;
 public class RectangleCreationTool extends CreationTool {
 
 	public RectangleCreationTool() {
-		super("resources/bwicons/rectangle1.png", "Rectángulo");
+		super("resources/bwicons/rectangle1.png", "Rectangle Creation");
 	}
 
 	@Override

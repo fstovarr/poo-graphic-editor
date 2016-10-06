@@ -2,7 +2,6 @@ package model;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import view.BoundBox;
@@ -28,7 +27,7 @@ public abstract class Figure implements Shape {
 		}
 	}
 
-	protected abstract void doPaint(Graphics g);
+	protected abstract void doPaint(Graphics2D g);
 
 	protected boolean needsNormalization() {
 		return true;
@@ -59,7 +58,7 @@ public abstract class Figure implements Shape {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics2D g) {
 		int thickness = 0;
 
 		Graphics2D graphics = (Graphics2D) g;
