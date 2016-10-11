@@ -12,9 +12,9 @@ import javax.swing.JPanel;
 import mediator.App;
 import model.Figure;
 
-public class Canvas extends JPanel {
+public class Canvas extends JPanel implements DrawingListener {
 	private static final long serialVersionUID = 1L;
-	private InteractiveTool activeTool = new SelectionTool();
+	private Tool activeTool = new SelectionTool();
 
 	public Canvas() {
 		super();
@@ -33,6 +33,10 @@ public class Canvas extends JPanel {
 		});
 	}
 
+	public void init() {
+		App.getInstance().addDrawingListener(this);
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -42,11 +46,16 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	protected void setActiveTool(InteractiveTool activeTool) {
+	protected void setActiveTool(Tool activeTool) {
 		this.activeTool = activeTool;
 	}
 
-	protected InteractiveTool getActiveTool() {
+	protected Tool getActiveTool() {
 		return activeTool;
+	}
+
+	@Override
+	public void update(final DrawingEvent event) {
+		repaint();
 	}
 }

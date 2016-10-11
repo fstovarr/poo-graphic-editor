@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 import model.Drawing;
 import model.Figure;
-import view.InteractiveTool;
+import view.DrawingListener;
+import view.Tool;
 import view.View;
 
 public class App {
@@ -25,9 +26,14 @@ public class App {
 		return model.getIterator();
 	}
 
+	public void addDrawingListener(DrawingListener listener) {
+		model.addListener(listener);
+	}
+
 	private void run() {
 		view.setBounds(10, 10, 800, 640);
 		view.setVisible(true);
+		view.init();
 	}
 
 	public static void main(String[] args) {
@@ -44,45 +50,38 @@ public class App {
 
 	public void selectAll() {
 		model.selectAll();
-		repaintCanvas();
 	}
 
 	public void addFigure(final Figure figure) {
 		model.addFigure(figure);
-		repaintCanvas();
 	}
 
 	public void deleteSelectedFigures() {
 		model.deleteSelected();
-		repaintCanvas();
-	}
-
-	public void repaintCanvas() {
-		view.repaintCanvas();
 	}
 
 	public void selectFigure(Figure figure) {
-		model.deselectAll();
 		model.select(figure);
 	}
-	
-	public InteractiveTool getActiveTool() {
+
+	public Tool getActiveTool() {
 		return view.getActiveTool();
 	}
 
-	public void setActiveTool(InteractiveTool tool) {
+	public void setActiveTool(Tool tool) {
 		view.setActiveTool(tool);
 	}
 
 	public void selectFigure(Point p1, Point p2) {
-		model.deselectAll();
 		model.select(p1, p2);
-		repaintCanvas();
+	}
+
+	public void deselectAll() {
+		model.deselectAll();
 	}
 
 	public void newFile() {
 		model.clear();
-		repaintCanvas();
 	}
 
 	public void exit() {

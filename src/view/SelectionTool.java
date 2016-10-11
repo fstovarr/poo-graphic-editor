@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import mediator.App;
 
-public class SelectionTool extends InteractiveTool {
+public class SelectionTool extends Tool {
 
 	public SelectionTool() {
 		super("resources/bwicons/selection1.png", "Selection Creation");
@@ -14,6 +14,7 @@ public class SelectionTool extends InteractiveTool {
 	protected void processMouse() {
 		Point ptPressed = getPtPressed();
 		Point ptReleased = getPtReleased();
+		App.getInstance().deselectAll();
 		App.getInstance().selectFigure(ptPressed, ptReleased);
 	}
 }

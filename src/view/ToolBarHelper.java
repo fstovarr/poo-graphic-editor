@@ -2,13 +2,17 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -17,17 +21,21 @@ import org.reflections.Reflections;
 
 import mediator.App;
 
-public class ToolBar extends JToolBar {
+public class ToolBarHelper extends JToolBar implements DrawingListener {
 	private static final long serialVersionUID = 1L;
 	private static final String TITLE_TOOLBAR = "Tools";
 	private final ArrayList<JComponent> buttons = new ArrayList<>();
 
-	public ToolBar() {
+	public ToolBarHelper() {
 		super(TITLE_TOOLBAR, JToolBar.VERTICAL);
 		// addAutoTools();
 		addManualTools();
 		setActions();
-		setFloatable(true);
+		setFloatable(false);
+	}
+
+	public void init() {
+		App.getInstance().addDrawingListener(this);
 	}
 
 	@SuppressWarnings(value = { "unused" })
@@ -50,7 +58,7 @@ public class ToolBar extends JToolBar {
 
 	private void addManualTools() {
 		buttons.add(new ToolButton(new SelectionTool()));
-		buttons.add(new ToolButton(new EliminationTool()));
+		buttons.add(new ToolButton(new DeleteCommand()));
 		buttons.add(new JToolBar.Separator(new Dimension(10, 10)));
 		buttons.add(new ToolButton(new LineCreationTool()));
 		buttons.add(new ToolButton(new RectangleCreationTool()));
@@ -61,6 +69,8 @@ public class ToolBar extends JToolBar {
 	private void setActions() {
 		Iterator<JComponent> iterator = buttons.iterator();
 
+		buttons.get(1).setEnabled(false);
+
 		while (iterator.hasNext()) {
 			JComponent component = (JComponent) iterator.next();
 
@@ -70,8 +80,8 @@ public class ToolBar extends JToolBar {
 				selectedTool.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						if (selectedTool.getTool() instanceof InteractiveTool) {
-							InteractiveTool it = App.getInstance().getActiveTool();
+						if (selectedTool.getCommand() instanceof Tool) {
+							Tool it = App.getInstance().getActiveTool();
 							int index = buttons.indexOf(new ToolButton(it));
 
 							if (index != -1) {
@@ -86,32 +96,51 @@ public class ToolBar extends JToolBar {
 		}
 	}
 
-	protected class ToolButton extends JToggleButton {
+	private class ToolButton extends JToggleButton {
+		private static final int ICON_SIZE = 32;
 		private static final long serialVersionUID = 1L;
-		private Tool tool;
+		private Command command;
+		private ImageIcon icon;
 
-		public ToolButton(Tool tool) {
-			this.tool = tool;
+		public ToolButton(Command command) {
+			this.command = command;
 
-			if (tool.getIcon() == null || tool.equals(null)) {
-				setText(tool.getName());
+			setResizedIcon(command.getIconPath());
+			if (icon == null) {
+				setText(command.getName());
 			} else {
-				setIcon(tool.getIcon());
+				setIcon(icon);
 			}
 		}
 
 		public void apply() {
-			if (tool instanceof InteractiveTool) {
+			if (command instanceof Tool) {
 				setSelected(true);
-				App.getInstance().setActiveTool((InteractiveTool) tool);
-			} else if (tool instanceof ActionTool) {
-				((ActionTool) tool).applyTool();
+				App.getInstance().setActiveTool((Tool) command);
+			} else {
+				command.execute();
 				setSelected(false);
 			}
 		}
 
-		public Tool getTool() {
-			return tool;
+		private void setResizedIcon(String iconPath) {
+			try {
+				URL resource = this.getClass().getClassLoader().getResource(iconPath);
+				if (resource != null) {
+					Image imageTemp = ImageIO.read(resource).getScaledInstance(ICON_SIZE, ICON_SIZE,
+							Image.SCALE_SMOOTH);
+					icon = new ImageIcon(imageTemp);
+				} else {
+					throw new Exception("Icon don't found");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				icon = null;
+			}
+		}
+
+		public Command getCommand() {
+			return command;
 		}
 
 		@Override
@@ -120,7 +149,7 @@ public class ToolBar extends JToolBar {
 				return false;
 			} else if (this == (ToolButton) obj) {
 				return true;
-			} else if (this.tool == ((ToolButton) obj).getTool()) {
+			} else if (this.command == ((ToolButton) obj).getCommand()) {
 				return true;
 			} else {
 				return false;
@@ -128,4 +157,22 @@ public class ToolBar extends JToolBar {
 		}
 	}
 
+	@Override
+	public void update(DrawingEvent event) {
+		switch (event) {
+		case SELECTED:
+			buttons.get(1).setEnabled(true);
+			break;
+
+		case DESELECTED:
+			buttons.get(1).setEnabled(false);
+			break;
+
+		case SAVED:
+			break;
+
+		default:
+			break;
+		}
+	}
 }

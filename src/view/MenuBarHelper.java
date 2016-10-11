@@ -9,14 +9,35 @@ import javax.swing.JMenuItem;
 
 import mediator.App;
 
-public class MenuBar extends JMenuBar {
+public class MenuBarHelper extends JMenuBar implements DrawingListener {
 	private static final long serialVersionUID = 1L;
+	private JMenuItem cut;
+	private JMenuItem copy;
+	private JMenuItem paste;
+	private JMenuItem delete;
+	private JMenuItem redo;
+	private JMenuItem undo;
+	private JMenuItem save;
+	private Command[] commands = new Command[9];
 
-	public MenuBar() {
-		super();
+	public MenuBarHelper() {
+		commands[0] = new CutCommand();
+		commands[1] = new CopyCommand();
+		commands[2] = new PasteCommand();
+		commands[3] = new DeleteCommand();
+		commands[4] = new RedoCommand();
+		commands[5] = new UndoCommand();
+		commands[6] = new SaveCommand();
+		commands[7] = new SelectAllCommand();
+		commands[8] = new ExitCommand();
+
 		createFileMenu();
 		createEditionMenu();
 		createHelpMenu();
+	}
+
+	public void init() {
+		App.getInstance().addDrawingListener(this);
 	}
 
 	private void createHelpMenu() {
@@ -27,6 +48,7 @@ public class MenuBar extends JMenuBar {
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 			}
 		});
 
@@ -38,54 +60,67 @@ public class MenuBar extends JMenuBar {
 		JMenu editionMenu = new JMenu("Edit");
 		editionMenu.setMnemonic('E');
 
-		JMenuItem undo = new JMenuItem("Undo");
+		redo = new JMenuItem(commands[4].getName());
+		undo = new JMenuItem(commands[5].getName());
+		cut = new JMenuItem(commands[0].getName());
+		copy = new JMenuItem(commands[1].getName());
+		paste = new JMenuItem(commands[2].getName());
+		delete = new JMenuItem(commands[3].getName());
+
+		redo.setEnabled(false);
+		undo.setEnabled(false);
+		cut.setEnabled(false);
+		copy.setEnabled(false);
+		paste.setEnabled(false);
+		delete.setEnabled(false);
+
 		undo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[5].execute();
 			}
 		});
 
-		JMenuItem redo = new JMenuItem("Redo");
 		redo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[4].execute();
 			}
 		});
 
-		JMenuItem cut = new JMenuItem("Cut");
 		cut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[0].execute();
 			}
 		});
 
-		JMenuItem copy = new JMenuItem("Copy");
 		copy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[1].execute();
 			}
 		});
 
-		JMenuItem paste = new JMenuItem("Paste");
 		paste.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[2].execute();
 			}
 		});
 
-		JMenuItem delete = new JMenuItem("Delete");
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				App.getInstance().deleteSelectedFigures();
+				commands[3].execute();
 			}
 		});
 
-		JMenuItem selectAll = new JMenuItem("Select all");
+		JMenuItem selectAll = new JMenuItem(commands[7].getName());
 		selectAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				App.getInstance().selectAll();
+				commands[7].execute();
 			}
 		});
 
@@ -110,7 +145,6 @@ public class MenuBar extends JMenuBar {
 		file.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				App.getInstance().newFile();
 			}
 		});
 
@@ -121,10 +155,11 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 
-		JMenuItem save = new JMenuItem("Save");
+		save = new JMenuItem(commands[6].getName());
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				commands[6].execute();
 			}
 		});
 
@@ -135,11 +170,11 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 
-		JMenuItem exit = new JMenuItem("Exit");
+		JMenuItem exit = new JMenuItem(commands[8].getName());
 		exit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				App.getInstance().exit();
+				commands[8].execute();
 			}
 		});
 
@@ -152,5 +187,27 @@ public class MenuBar extends JMenuBar {
 		fileMenu.add(exit);
 
 		add(fileMenu);
+	}
+
+	@Override
+	public void update(DrawingEvent event) {
+		switch (event) {
+		case SELECTED:
+			cut.setEnabled(true);
+			copy.setEnabled(true);
+			paste.setEnabled(true);
+			delete.setEnabled(true);
+			break;
+
+		case DESELECTED:
+			cut.setEnabled(false);
+			copy.setEnabled(false);
+			paste.setEnabled(false);
+			delete.setEnabled(false);
+			break;
+
+		default:
+			break;
+		}
 	}
 }

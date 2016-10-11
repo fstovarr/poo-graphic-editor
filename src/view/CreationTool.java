@@ -5,7 +5,7 @@ import java.awt.Point;
 import mediator.App;
 import model.Figure;
 
-public abstract class CreationTool extends InteractiveTool {
+public abstract class CreationTool extends Tool {
 
 	public CreationTool(String iconPath, String name) {
 		super(iconPath, name);
@@ -26,6 +26,7 @@ public abstract class CreationTool extends InteractiveTool {
 			// 3. Check figure
 			if (figure != null) {
 				// 4. Add figure to model
+				App.getInstance().deselectAll();
 				App.getInstance().addFigure(figure);
 				App.getInstance().selectFigure(figure);
 			}
