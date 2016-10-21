@@ -19,6 +19,8 @@ import javax.swing.JToolBar;
 
 import org.reflections.Reflections;
 
+//import org.reflections.Reflections;
+
 import mediator.App;
 
 public class ToolBarHelper extends JToolBar implements DrawingListener {
@@ -59,6 +61,9 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 	private void addManualTools() {
 		buttons.add(new ToolButton(new SelectionTool()));
 		buttons.add(new ToolButton(new DeleteCommand()));
+		buttons.add(new ToolButton(new ThicknessCommand()));
+		buttons.add(new ToolButton(new FillColorCommand()));
+		buttons.add(new ToolButton(new StrokeColorCommand()));
 		buttons.add(new JToolBar.Separator(new Dimension(10, 10)));
 		buttons.add(new ToolButton(new LineCreationTool()));
 		buttons.add(new ToolButton(new RectangleCreationTool()));
@@ -69,7 +74,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 	private void setActions() {
 		Iterator<JComponent> iterator = buttons.iterator();
 
-		buttons.get(1).setEnabled(false);
+		enableButtons(false);
 
 		while (iterator.hasNext()) {
 			JComponent component = (JComponent) iterator.next();
@@ -105,7 +110,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 		public ToolButton(Command command) {
 			this.command = command;
 
-			setResizedIcon(command.getIconPath());
+			icon = getResizedIcon(command.getIconPath());
 			if (icon == null) {
 				setText(command.getName());
 			} else {
@@ -123,20 +128,24 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 			}
 		}
 
-		private void setResizedIcon(String iconPath) {
-			try {
-				URL resource = this.getClass().getClassLoader().getResource(iconPath);
-				if (resource != null) {
-					Image imageTemp = ImageIO.read(resource).getScaledInstance(ICON_SIZE, ICON_SIZE,
-							Image.SCALE_SMOOTH);
-					icon = new ImageIcon(imageTemp);
-				} else {
-					throw new Exception("Icon don't found");
+		private ImageIcon getResizedIcon(String iconPath) {
+			ImageIcon temp = null;
+
+			if (iconPath != null) {
+				try {
+					URL resource = this.getClass().getClassLoader().getResource(iconPath);
+					if (resource != null) {
+						temp = new ImageIcon(
+								ImageIO.read(resource).getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH));
+					} else {
+						throw new Exception("Icon don't found");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				icon = null;
 			}
+
+			return temp;
 		}
 
 		public Command getCommand() {
@@ -157,15 +166,21 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 		}
 	}
 
+	private void enableButtons(boolean enable) {
+		for (int i = 1; i < 5; i++) {
+			buttons.get(i).setEnabled(enable);
+		}
+	}
+
 	@Override
 	public void update(DrawingEvent event) {
 		switch (event) {
 		case SELECTED:
-			buttons.get(1).setEnabled(true);
+			enableButtons(true);
 			break;
 
 		case DESELECTED:
-			buttons.get(1).setEnabled(false);
+			enableButtons(false);
 			break;
 
 		case SAVED:

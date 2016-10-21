@@ -53,6 +53,16 @@ public class BoundBox extends Rectangle implements Shape {
 		}
 	}
 
+	public void updateSize(Point base, Point point) {
+		int width = point.x - base.x;
+		int height = point.y - base.y;
+
+		this.x = base.x;
+		this.y = base.y;
+
+		setSize(width, height);
+	}
+
 	public static int getSizeControlPoint() {
 		return ControlPoint.SIZE;
 	}

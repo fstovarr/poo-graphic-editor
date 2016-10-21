@@ -2,7 +2,6 @@ package view;
 
 import java.awt.Point;
 
-import model.Figure;
 import model.Text;
 
 public class TextCreationTool extends CreationTool {
@@ -12,8 +11,7 @@ public class TextCreationTool extends CreationTool {
 	}
 
 	@Override
-	protected Figure createFigure(Point ptPressed, Point ptReleased) {
-		return new Text(new BoundBox(ptPressed.x, ptPressed.y, ptReleased.x - ptPressed.x, ptReleased.y - ptPressed.y),
-				"Hola mundo", null);
+	protected void createInitialFigure(Point ptPressed) {
+		setFigure(new Text(new BoundBox(ptPressed.x, ptPressed.y, 0, 0), "Hola mundo", null));
 	}
 }

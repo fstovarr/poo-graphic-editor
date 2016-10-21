@@ -61,15 +61,14 @@ public abstract class Figure implements Shape {
 	public void paint(Graphics2D g) {
 		int thickness = 0;
 
-		Graphics2D graphics = (Graphics2D) g;
-		graphics.setColor(color);
+		g.setColor(color);
 
-		if (this instanceof GeomFigure) {
-			thickness = ((GeomFigure) this).getThickness();
-			graphics.setStroke(new BasicStroke(thickness));
+		if (this instanceof GeometricFigure) {
+			thickness = ((GeometricFigure) this).getThickness();
+			g.setStroke(new BasicStroke(thickness));
 		}
 
-		doPaint(graphics);
+		doPaint(g);
 
 		normalizedBoundBox.x = boundBox.x - thickness / 2;
 		normalizedBoundBox.y = boundBox.y - thickness / 2;
@@ -77,7 +76,7 @@ public abstract class Figure implements Shape {
 		normalizedBoundBox.height = boundBox.height + thickness;
 
 		if (isSelected()) {
-			getNormalizedBoundBox().paint(graphics);
+			getNormalizedBoundBox().paint(g);
 		}
 	}
 

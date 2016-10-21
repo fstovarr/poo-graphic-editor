@@ -2,7 +2,6 @@ package view;
 
 import java.awt.Point;
 
-import model.Figure;
 import model.Rectangle;
 
 public class RectangleCreationTool extends CreationTool {
@@ -12,9 +11,7 @@ public class RectangleCreationTool extends CreationTool {
 	}
 
 	@Override
-	protected Figure createFigure(Point ptPressed, Point ptReleased) {
-		return new Rectangle(
-				new BoundBox(ptPressed.x, ptPressed.y, ptReleased.x - ptPressed.x, ptReleased.y - ptPressed.y), null, 1,
-				null);
+	protected void createInitialFigure(Point ptPressed) {
+		setFigure(new Rectangle(new BoundBox(ptPressed.x, ptPressed.y, 0, 0), null, 1, null));
 	}
 }

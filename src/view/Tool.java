@@ -44,6 +44,11 @@ public abstract class Tool extends MouseAdapter implements Command {
 	}
 
 	@Override
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+	}
+
+	@Override
 	public void execute() {
 		processMouse();
 	}

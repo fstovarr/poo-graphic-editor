@@ -15,12 +15,13 @@ import model.Figure;
 public class Canvas extends JPanel implements DrawingListener {
 	private static final long serialVersionUID = 1L;
 	private Tool activeTool = new SelectionTool();
+	private MouseAdapter adapter;
 
 	public Canvas() {
 		super();
 		setBackground(Color.WHITE);
 
-		addMouseListener(new MouseAdapter() {
+		adapter = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				activeTool.mousePressed(e);
@@ -30,7 +31,15 @@ public class Canvas extends JPanel implements DrawingListener {
 			public void mouseReleased(MouseEvent e) {
 				activeTool.mouseReleased(e);
 			}
-		});
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				activeTool.mouseDragged(e);
+			}
+		};
+
+		addMouseListener(adapter);
+		addMouseMotionListener(adapter);
 	}
 
 	public void init() {
@@ -48,6 +57,9 @@ public class Canvas extends JPanel implements DrawingListener {
 
 	protected void setActiveTool(Tool activeTool) {
 		this.activeTool = activeTool;
+		if (activeTool instanceof CreationTool) {
+			((CreationTool) activeTool).setListener(this);
+		}
 	}
 
 	protected Tool getActiveTool() {

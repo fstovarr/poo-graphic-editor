@@ -13,7 +13,7 @@ public class ExitCommand implements Command {
 
 	@Override
 	public String getIconPath() {
-		return null;
+		return iconPath;
 	}
 
 	@Override

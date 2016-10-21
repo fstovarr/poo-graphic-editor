@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import view.BoundBox;
 
-public abstract class ClosedFigure extends GeomFigure {
+public abstract class ClosedFigure extends GeometricFigure {
 	private Color fillColor;
 
 	public ClosedFigure(BoundBox boundBox, Color color, int thicknes, Color fillColor) {
@@ -14,6 +14,10 @@ public abstract class ClosedFigure extends GeomFigure {
 			fillColor = new Color(255, 255, 255, 0);
 		}
 
+		this.fillColor = fillColor;
+	}
+
+	public void setFillColor(Color fillColor) {
 		this.fillColor = fillColor;
 	}
 

@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import view.BoundBox;
 
-public class Line extends GeomFigure {
+public class Line extends GeometricFigure {
 	public Line(BoundBox boundBox, Color color, int thickness) {
 		super(boundBox, color, thickness);
 	}

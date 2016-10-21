@@ -1,13 +1,14 @@
 package view;
 
+import mediator.App;
+
 public class SaveCommand implements Command {
 	private static final String name = "Save";
 	private static final String iconPath = null;
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-
+		App.getInstance().save();
 	}
 
 	@Override

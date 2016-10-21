@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import view.BoundBox;
 
 public class Ellipse extends ClosedFigure {
-
 	public Ellipse(BoundBox boundBox, Color color, int thicknes, Color fillColor) {
 		super(boundBox, color, thicknes, fillColor);
 	}
@@ -14,10 +13,10 @@ public class Ellipse extends ClosedFigure {
 	@Override
 	public void doPaint(Graphics2D g) {
 		BoundBox bbox = getBoundBox();
-		g.drawOval(bbox.x, bbox.y, bbox.width, bbox.height);
 
-		int thickness = getThickness();
 		g.setColor(getFillColor());
-		g.fillOval(bbox.x + thickness / 2, bbox.y + thickness / 2, bbox.width - thickness, bbox.height - thickness);
+		g.fillOval(bbox.x, bbox.y, bbox.width, bbox.height);
+		g.setColor(getColor());
+		g.drawOval(bbox.x, bbox.y, bbox.width, bbox.height);
 	}
 }

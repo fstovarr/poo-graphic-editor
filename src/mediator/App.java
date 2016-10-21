@@ -1,7 +1,10 @@
 package mediator;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
+import java.util.Locale;
 
 import model.Drawing;
 import model.Figure;
@@ -13,17 +16,22 @@ public class App {
 	private static App app;
 	private Drawing model;
 	private View view;
-	private static final String TITLE_APP = "Graphic Editor";
+	public static final String TITLE_APP = "Graphic Editor";
 
 	// Singleton Design Pattern
 	private App() {
 		super();
 		model = new Drawing();
 		view = new View(TITLE_APP);
+		Locale.setDefault(Locale.US);
 	}
 
 	public Iterator<Figure> getIterator() {
 		return model.getIterator();
+	}
+
+	public String getPathName() {
+		return model.getPathName();
 	}
 
 	public void addDrawingListener(DrawingListener listener) {
@@ -86,5 +94,33 @@ public class App {
 
 	public void exit() {
 		System.exit(0);
+	}
+
+	public void showStrokeColorChooser() {
+		model.changeStrokeColor(view.showColorChooser("Choose a stroke color"));
+	}
+
+	public void showFillColorChooser() {
+		model.changeFillColor(view.showColorChooser("Choose a fill color"));
+	}
+
+	public void deleteFigure(Figure figure) {
+		model.deleteFigure(figure);
+	}
+
+	public void showThicknessChooser() {
+		view.showThicknessChooser("Set the thickness", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int thickness = view.getThicknessValue();
+				if (thickness > 0) {
+					model.changeThickness(thickness);
+				}
+			}
+		});
+	}
+
+	public void save() {
+		model.save();		
 	}
 }

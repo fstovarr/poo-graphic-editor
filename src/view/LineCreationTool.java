@@ -1,9 +1,11 @@
 package view;
 
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 import model.Figure;
 import model.Line;
+import view.DrawingListener.DrawingEvent;
 
 public class LineCreationTool extends CreationTool {
 	public LineCreationTool() {
@@ -11,8 +13,15 @@ public class LineCreationTool extends CreationTool {
 	}
 
 	@Override
-	protected Figure createFigure(Point ptPressed, Point ptReleased) {
-		return new Line(new BoundBox(ptPressed.x, ptPressed.y, ptReleased.x - ptPressed.x, ptReleased.y - ptPressed.y),
-				null, 1);
+	protected void createInitialFigure(Point ptPressed) {
+		setFigure(new Line(new BoundBox(ptPressed.x, ptPressed.y, 0, 0), null, 1));
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		Figure figure = getFigure();
+		figure.getBoundBox().updateSize(getPtPressed(), e.getPoint());
+
+		getListener().update(DrawingEvent.MODIFIED);
 	}
 }

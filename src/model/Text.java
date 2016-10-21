@@ -14,22 +14,20 @@ public class Text extends Figure {
 	public Text(final BoundBox boundBox, String text, Color color) {
 		super(boundBox, color);
 		this.text = text;
-		font = new Font("TimesRoman", Font.PLAIN, boundBox.height);
 	}
 
 	@Override
 	protected void doPaint(Graphics2D g) {
 		BoundBox box = getBoundBox();
+		font = new Font("TimesRoman", Font.PLAIN, box.height);
 		g.setFont(font);
-		g.setColor(getColor());
 
 		FontMetrics fm = g.getFontMetrics(font);
 		box.width = fm.stringWidth(text);
-		box.height = fm.getHeight();
-		
+
 		int dim = BoundBox.getSizeControlPoint() / 2;
 		g.setClip(box.x - dim, box.y - dim, box.width + dim * 2, box.height + dim * 2);
-		g.drawString(text, box.x, box.y + fm.getAscent());
+		g.drawString(text, box.x, box.y + (fm.getHeight() / 2 + fm.getDescent()));
 		g.setClip(null);
 	}
 }

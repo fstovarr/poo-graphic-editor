@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ public class Drawing {
 	private List<Figure> figures;
 	private List<DrawingListener> listeners;
 	private List<Figure> selectedFigures;
+	private String pathName = "New graphic";
 
 	public Drawing() {
 		figures = new LinkedList<>();
@@ -23,23 +25,50 @@ public class Drawing {
 
 	public void addFigure(final Figure figure) {
 		figures.add(figure);
-		notifyListeners(DrawingEvent.ADDED);
-	}
-
-	private void notifyListeners(DrawingEvent event) {
-		for (DrawingListener listener : listeners) {
-			listener.update(event);
-		}
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void addListener(DrawingListener listener) {
 		listeners.add(listener);
 	}
 
+	public void changeFillColor(Color color) {
+		for (Figure figure : selectedFigures) {
+			if (figure instanceof ClosedFigure) {
+				((ClosedFigure) figure).setFillColor(color);
+			}
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void changeStrokeColor(Color color) {
+		for (Figure figure : selectedFigures) {
+			if (figure instanceof ClosedFigure) {
+				((ClosedFigure) figure).setColor(color);
+			}
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void changeThickness(int thickness) {
+		for (Figure figure : selectedFigures) {
+			if (figure instanceof GeometricFigure) {
+				((GeometricFigure) figure).setThickness(thickness);
+			}
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
 	public void clear() {
 		figures.clear();
 		selectedFigures.clear();
-		notifyListeners(DrawingEvent.DELETED);
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void deleteFigure(Figure figure) {
+		figures.remove(figure);
+		selectedFigures.remove(figures);
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void deleteSelected() {
@@ -51,7 +80,7 @@ public class Drawing {
 		}
 
 		notifyListeners(DrawingEvent.DESELECTED);
-		notifyListeners(DrawingEvent.DELETED);
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void deselectAll() {
@@ -66,9 +95,19 @@ public class Drawing {
 		return figures.iterator();
 	}
 
+	public String getPathName() {
+		return pathName;
+	}
+
+	private void notifyListeners(DrawingEvent event) {
+		for (DrawingListener listener : listeners) {
+			listener.update(event);
+		}
+	}
+
 	private void removeFigure(final Figure figure) {
 		figures.remove(figure);
-		notifyListeners(DrawingEvent.DELETED);
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	private void select(BoundBox box) {
@@ -78,17 +117,17 @@ public class Drawing {
 			Figure figure = iterator.previous();
 			BoundBox boxFigure = figure.getNormalizedBoundBox();
 			if (box.contains(boxFigure)) {
-				figure.setSelected(true);
-				selectedFigures.add(figure);
+				select(figure);
 			}
 		}
-		notifyListeners(DrawingEvent.SELECTED);
 	}
 
 	public void select(Figure figure) {
 		figure.setSelected(true);
 		selectedFigures.add(figure);
-		notifyListeners(DrawingEvent.SELECTED);
+		if (!selectedFigures.isEmpty()) {
+			notifyListeners(DrawingEvent.SELECTED);
+		}
 	}
 
 	public void select(Point p1, Point p2) {
@@ -116,6 +155,13 @@ public class Drawing {
 			figure.setSelected(true);
 			selectedFigures.add(figure);
 		}
-		notifyListeners(DrawingEvent.SELECTED);
+
+		if (!selectedFigures.isEmpty()) {
+			notifyListeners(DrawingEvent.SELECTED);
+		}
+	}
+
+	public void save() {
+		notifyListeners(DrawingEvent.SAVED);
 	}
 }

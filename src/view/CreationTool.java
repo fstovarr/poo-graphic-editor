@@ -1,17 +1,47 @@
 package view;
 
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 import mediator.App;
 import model.Figure;
+import view.DrawingListener.DrawingEvent;
 
 public abstract class CreationTool extends Tool {
+	private Figure figure;
+	private DrawingListener listener;
 
 	public CreationTool(String iconPath, String name) {
 		super(iconPath, name);
 	}
 
-	protected abstract Figure createFigure(Point ptPressed, Point ptReleased);
+	protected abstract void createInitialFigure(Point ptPressed);
+
+	protected Figure getFigure() {
+		return figure;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+
+		Figure figure = getFigure();
+		figure.getBoundBox().updateSize(getPtPressed(), e.getPoint());
+		figure.getBoundBox().normalize();
+
+		listener.update(DrawingEvent.MODIFIED);
+	}
+
+	public DrawingListener getListener() {
+		return listener;
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+		createInitialFigure(e.getPoint());
+		App.getInstance().addFigure(figure);
+	}
 
 	@Override
 	protected void processMouse() {
@@ -22,14 +52,24 @@ public abstract class CreationTool extends Tool {
 		// 1. Non empty bounding box
 		if (!BoundBox.isEmptyBoundBox(ptPressed, ptReleased)) {
 			// 2. Create figure
-			Figure figure = createFigure(ptPressed, ptReleased);
+			// Figure figure = createFigure(ptPressed, ptReleased);
 			// 3. Check figure
-			if (figure != null) {
-				// 4. Add figure to model
+			if (figure == null) {
+				App.getInstance().deleteFigure(figure);
+			} else {
 				App.getInstance().deselectAll();
-				App.getInstance().addFigure(figure);
 				App.getInstance().selectFigure(figure);
 			}
+		} else {
+			App.getInstance().deleteFigure(figure);
 		}
+	}
+
+	protected void setFigure(Figure figure) {
+		this.figure = figure;
+	}
+
+	public void setListener(DrawingListener listener) {
+		this.listener = listener;
 	}
 }
