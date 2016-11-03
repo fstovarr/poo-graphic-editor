@@ -60,6 +60,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 
 	private void addManualTools() {
 		buttons.add(new ToolButton(new SelectionTool()));
+		buttons.add(new JToolBar.Separator(new Dimension(10, 10)));
 		buttons.add(new ToolButton(new DeleteCommand()));
 		buttons.add(new ToolButton(new ThicknessCommand()));
 		buttons.add(new ToolButton(new FillColorCommand()));
@@ -120,8 +121,9 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 
 		public void apply() {
 			if (command instanceof Tool) {
+				Tool tool = (Tool) command;
 				setSelected(true);
-				App.getInstance().setActiveTool((Tool) command);
+				App.getInstance().setActiveTool(tool);
 			} else {
 				command.execute();
 				setSelected(false);
@@ -167,7 +169,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 	}
 
 	private void enableButtons(boolean enable) {
-		for (int i = 1; i < 5; i++) {
+		for (int i = 2; i <= 5; i++) {
 			buttons.get(i).setEnabled(enable);
 		}
 	}

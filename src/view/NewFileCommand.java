@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.KeyEvent;
+
 import mediator.App;
 
 public class NewFileCommand implements Command {
@@ -13,13 +15,16 @@ public class NewFileCommand implements Command {
 
 	@Override
 	public String getIconPath() {
-		// TODO Auto-generated method stub
 		return iconPath;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
+	}
+
+	@Override
+	public int getShortcutKey() {
+		return KeyEvent.VK_N;
 	}
 }

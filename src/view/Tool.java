@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,10 +9,21 @@ public abstract class Tool extends MouseAdapter implements Command {
 	private String name, iconPath;
 	private Point ptPressed;
 	private Point ptReleased;
+	private Cursor cursor;
 
 	public Tool(String iconPath, String name) {
 		this.name = name;
 		this.iconPath = iconPath;
+		cursor = Cursor.getDefaultCursor();
+	}
+
+	@Override
+	public void execute() {
+		processMouse();
+	}
+
+	public Cursor getCursor() {
+		return cursor;
 	}
 
 	public String getIconPath() {
@@ -31,6 +43,11 @@ public abstract class Tool extends MouseAdapter implements Command {
 	}
 
 	@Override
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+	}
+
+	@Override
 	public void mousePressed(MouseEvent e) {
 		super.mousePressed(e);
 		ptPressed = e.getPoint();
@@ -43,15 +60,9 @@ public abstract class Tool extends MouseAdapter implements Command {
 		execute();
 	}
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		super.mouseDragged(e);
-	}
-
-	@Override
-	public void execute() {
-		processMouse();
-	}
-
 	protected abstract void processMouse();
+
+	protected void setCursor(Cursor cursor) {
+		this.cursor = cursor;
+	}
 }

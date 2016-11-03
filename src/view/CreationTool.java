@@ -58,11 +58,16 @@ public abstract class CreationTool extends Tool {
 				App.getInstance().deleteFigure(figure);
 			} else {
 				App.getInstance().deselectAll();
-				App.getInstance().selectFigure(figure);
+				App.getInstance().addEdit(new CreationEdit(figure));
 			}
 		} else {
 			App.getInstance().deleteFigure(figure);
 		}
+	}
+
+	@Override
+	public int getShortcutKey() {
+		return -1;
 	}
 
 	protected void setFigure(Figure figure) {

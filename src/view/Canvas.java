@@ -36,6 +36,11 @@ public class Canvas extends JPanel implements DrawingListener {
 			public void mouseDragged(MouseEvent e) {
 				activeTool.mouseDragged(e);
 			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				activeTool.mouseMoved(e);
+			}
 		};
 
 		addMouseListener(adapter);
@@ -49,7 +54,7 @@ public class Canvas extends JPanel implements DrawingListener {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Iterator<Figure> iterator = App.getInstance().getIterator();
+		Iterator<Figure> iterator = App.getInstance().getFiguresIterator();
 		while (iterator.hasNext()) {
 			iterator.next().paint((Graphics2D) g);
 		}

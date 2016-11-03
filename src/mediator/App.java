@@ -1,10 +1,20 @@
 package mediator;
 
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+
+import javax.swing.undo.UndoableEdit;
 
 import model.Drawing;
 import model.Figure;
@@ -17,6 +27,7 @@ public class App {
 	private Drawing model;
 	private View view;
 	public static final String TITLE_APP = "Graphic Editor";
+	public static final String SUG_FILE_NAME = "New graphic.eg";
 
 	// Singleton Design Pattern
 	private App() {
@@ -26,12 +37,54 @@ public class App {
 		Locale.setDefault(Locale.US);
 	}
 
-	public Iterator<Figure> getIterator() {
-		return model.getIterator();
+	public Iterator<Figure> getFiguresIterator() {
+		return model.getFiguresIterator();
 	}
 
-	public String getPathName() {
-		return model.getPathName();
+	public void save(final File file) {
+		ObjectOutputStream oss = null;
+
+		try {
+			oss = new ObjectOutputStream(new FileOutputStream(file));
+			model.save(oss, file.getName());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (oss != null) {
+				try {
+					oss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void load(File file) {
+		ObjectInputStream ois = null;
+
+		try {
+			ois = new ObjectInputStream(new FileInputStream(file));
+			model.load(ois);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (ois != null) {
+				try {
+					ois.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void moveSelectedFigures(Point base, Point p) {
+		model.moveSelectedFigures(base, p);
+	}
+
+	public String getFileName() {
+		return model.getFileName();
 	}
 
 	public void addDrawingListener(DrawingListener listener) {
@@ -64,8 +117,16 @@ public class App {
 		model.addFigure(figure);
 	}
 
+	public void addFigures(final List<Figure> figures) {
+		model.addFigures(figures);
+	}
+
 	public void deleteSelectedFigures() {
 		model.deleteSelected();
+	}
+
+	public List<Figure> getSelectedFigures() {
+		return model.getSelectedFigures();
 	}
 
 	public void selectFigure(Figure figure) {
@@ -74,6 +135,10 @@ public class App {
 
 	public Tool getActiveTool() {
 		return view.getActiveTool();
+	}
+
+	public void undoAction() {
+		model.undo();
 	}
 
 	public void setActiveTool(Tool tool) {
@@ -108,6 +173,14 @@ public class App {
 		model.deleteFigure(figure);
 	}
 
+	public void setCursor(Cursor cursor) {
+		view.setCursor(cursor);
+	}
+
+	public boolean hasSelectedFigures() {
+		return model.hasSelectedFigures();
+	}
+
 	public void showThicknessChooser() {
 		view.showThicknessChooser("Set the thickness", new ActionListener() {
 			@Override
@@ -120,7 +193,19 @@ public class App {
 		});
 	}
 
-	public void save() {
-		model.save();		
+	public void resizeSelectedFigure(Point point) {
+		model.resizeSelectedFigure(point);
+	}
+
+	public void addEdit(UndoableEdit edit) {
+		model.addEdit(edit);
+	}
+
+	public void redoAction() {
+		model.redo();
+	}
+
+	public void deleteFigures(List<Figure> figures) {
+		model.deleteFigures(figures);
 	}
 }

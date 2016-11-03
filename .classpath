@@ -16,7 +16,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="H:/UNAL/Programación Orientada a Objetos/reflections-0.9.10.jar"/>
-	<classpathentry kind="lib" path="H:/UNAL/Programación Orientada a Objetos/ColorPicker.jar"/>
+	<classpathentry kind="lib" path="/home/fabiotovar/Proyectos/graphiceditor/ColorPicker.jar"/>
+	<classpathentry kind="lib" path="/home/fabiotovar/Proyectos/graphiceditor/reflections-0.9.10.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

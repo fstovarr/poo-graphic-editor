@@ -18,4 +18,9 @@ public class ThicknessCommand implements Command {
 	public String getName() {
 		return "Set thickness";
 	}
+	
+	@Override
+	public int getShortcutKey() {
+		return -1;
+	}
 }

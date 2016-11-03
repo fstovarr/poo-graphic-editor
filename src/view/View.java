@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
@@ -34,6 +35,7 @@ public class View extends JFrame implements DrawingListener {
 		bar.init();
 		toolBar.init();
 		canvas.init();
+
 	}
 
 	public Tool getActiveTool() {
@@ -57,12 +59,23 @@ public class View extends JFrame implements DrawingListener {
 	}
 
 	@Override
+	public void setCursor(Cursor cursor) {
+		canvas.setCursor(cursor);
+	}
+
+	@Override
 	public void update(DrawingEvent event) {
+		String fileName = App.getInstance().getFileName();
+
+		if (event == DrawingEvent.NEW) {
+			fileName = App.SUG_FILE_NAME;
+		}
+
 		if (event == DrawingEvent.MODIFIED) {
-			setTitle(App.TITLE_APP + " - " + App.getInstance().getPathName() + " *");
+			setTitle(App.TITLE_APP + " - " + fileName + " *");
 		}
 		if (event == DrawingEvent.SAVED) {
-			setTitle(App.TITLE_APP + " - " + App.getInstance().getPathName());
+			setTitle(App.TITLE_APP + " - " + fileName);
 		}
 	}
 }

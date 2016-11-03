@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.KeyEvent;
+
 public class PasteCommand implements Command {
 	private static final String name = "Paste";
 	private static final String iconPath = null;
@@ -12,13 +14,16 @@ public class PasteCommand implements Command {
 
 	@Override
 	public String getIconPath() {
-		// TODO Auto-generated method stub
 		return iconPath;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
+	}
+
+	@Override
+	public int getShortcutKey() {
+		return KeyEvent.VK_V;
 	}
 }

@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.KeyEvent;
+
 public class CopyCommand implements Command {
 	private static final String name = "Copy";
 	private static final String iconPath = "resources/bwicons/eraser1.png";
@@ -17,5 +19,10 @@ public class CopyCommand implements Command {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public int getShortcutKey() {
+		return KeyEvent.VK_C;
 	}
 }

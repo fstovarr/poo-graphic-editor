@@ -1,6 +1,9 @@
 package view;
 
+import java.util.List;
+
 import mediator.App;
+import model.Figure;
 
 public class DeleteCommand implements Command {
 	private static final String name = "Delete";
@@ -11,6 +14,8 @@ public class DeleteCommand implements Command {
 
 	@Override
 	public void execute() {
+		List<Figure> figures = App.getInstance().getSelectedFigures();
+		App.getInstance().addEdit(new DeleteEdit(figures));
 		App.getInstance().deleteSelectedFigures();
 	}
 
@@ -22,5 +27,10 @@ public class DeleteCommand implements Command {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public int getShortcutKey() {
+		return -1;
 	}
 }

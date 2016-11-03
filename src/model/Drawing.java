@@ -2,10 +2,19 @@ package model;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.UndoableEditSupport;
 
 import view.BoundBox;
 import view.DrawingListener;
@@ -15,16 +24,30 @@ public class Drawing {
 	private List<Figure> figures;
 	private List<DrawingListener> listeners;
 	private List<Figure> selectedFigures;
-	private String pathName = "New graphic";
+	private String fileName = null;
+	private UndoManager undoManager;
+	private UndoableEditSupport editSupport;
 
 	public Drawing() {
 		figures = new LinkedList<>();
 		selectedFigures = new LinkedList<>();
 		listeners = new LinkedList<>();
+
+		undoManager = new UndoManager();
+		editSupport = new UndoableEditSupport();
+		editSupport.addUndoableEditListener(new UndoableEditListener() {
+			@Override
+			public void undoableEditHappened(UndoableEditEvent e) {
+				UndoableEdit edit = e.getEdit();
+				undoManager.addEdit(edit);
+				notifyListeners(DrawingEvent.UNDO_REDO);
+			}
+		});
 	}
 
 	public void addFigure(final Figure figure) {
 		figures.add(figure);
+		select(figure);
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
@@ -62,13 +85,21 @@ public class Drawing {
 	public void clear() {
 		figures.clear();
 		selectedFigures.clear();
-		notifyListeners(DrawingEvent.MODIFIED);
+		notifyListeners(DrawingEvent.NEW);
 	}
 
 	public void deleteFigure(Figure figure) {
 		figures.remove(figure);
 		selectedFigures.remove(figures);
 		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public boolean hasSelectedFigures() {
+		return !selectedFigures.isEmpty();
+	}
+
+	public List<Figure> getSelectedFigures() {
+		return new LinkedList<>(selectedFigures);
 	}
 
 	public void deleteSelected() {
@@ -91,12 +122,12 @@ public class Drawing {
 		notifyListeners(DrawingEvent.DESELECTED);
 	}
 
-	public Iterator<Figure> getIterator() {
+	public Iterator<Figure> getFiguresIterator() {
 		return figures.iterator();
 	}
 
-	public String getPathName() {
-		return pathName;
+	public String getFileName() {
+		return fileName;
 	}
 
 	private void notifyListeners(DrawingEvent event) {
@@ -163,5 +194,69 @@ public class Drawing {
 
 	public void save() {
 		notifyListeners(DrawingEvent.SAVED);
+	}
+
+	public void moveSelectedFigures(Point base, Point p) {
+		for (Figure figure : selectedFigures) {
+			figure.move(base, p);
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void resizeSelectedFigure(Point point) {
+		selectedFigures.get(0).resize(point);
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void undo() {
+		if (undoManager.canUndo()) {
+			undoManager.undo();
+		}
+	}
+
+	public void redo() {
+		if (undoManager.canRedo()) {
+			undoManager.redo();
+		}
+	}
+
+	public void addEdit(UndoableEdit edit) {
+		editSupport.postEdit(edit);
+	}
+
+	public void addFigures(List<Figure> figures2) {
+		for (Figure f : figures2) {
+			figures.add(f);
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void save(final ObjectOutputStream oos, String name) {
+		try {
+			oos.writeObject(figures);
+			fileName = name;
+			notifyListeners(DrawingEvent.SAVED);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void load(final ObjectInputStream ois) {
+		try {
+			figures = (List<Figure>) ois.readObject();
+			notifyListeners(DrawingEvent.LOADED);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteFigures(List<Figure> figures2) {
+		for (Figure figure : figures2) {
+			figures.remove(figure);
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 }

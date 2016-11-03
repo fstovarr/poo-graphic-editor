@@ -20,7 +20,7 @@ public class BoundBox extends Rectangle implements Shape {
 
 	public BoundBox(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		cPoint = new ControlPoint[ControlPoint.Cardinal.values().length];
+		cPoint = new ControlPoint[Cardinal.values().length];
 	}
 
 	public void normalize() {
@@ -38,7 +38,7 @@ public class BoundBox extends Rectangle implements Shape {
 	@Override
 	public void paint(Graphics2D g) {
 		for (int i = 0; i < cPoint.length; i++) {
-			cPoint[i] = new ControlPoint(this, ControlPoint.Cardinal.values()[i]);
+			cPoint[i] = new ControlPoint(this, Cardinal.values()[i]);
 		}
 
 		Graphics2D graphics = (Graphics2D) g;
@@ -67,25 +67,22 @@ public class BoundBox extends Rectangle implements Shape {
 		return ControlPoint.SIZE;
 	}
 
-	private static class ControlPoint implements Shape {
+	private static class ControlPoint extends Rectangle implements Shape {
+		private static final long serialVersionUID = 1L;
 		private static final Color color = Color.BLUE;
 		public static final int SIZE = 7;
 		private final BoundBox bbox;
 		private final Cardinal cardinal;
-		private final Point position;
-
-		public static enum Cardinal {
-			NW, N, NE, E, SE, S, SW, W;
-		}
 
 		public ControlPoint(final BoundBox bbox, final Cardinal cardinal) {
 			this.bbox = bbox;
 			this.cardinal = cardinal;
-			position = new Point(bbox.x - SIZE / 2, bbox.y - SIZE / 2);
-			setPosition();
+			setPosition(new Point(bbox.x - SIZE / 2, bbox.y - SIZE / 2));
+			width = SIZE;
+			height = SIZE;
 		}
 
-		private void setPosition() {
+		private void setPosition(Point position) {
 			switch (cardinal) {
 			case NW:
 				break;
@@ -124,16 +121,28 @@ public class BoundBox extends Rectangle implements Shape {
 			default:
 				break;
 			}
+
+			x = position.x;
+			y = position.y;
 		}
 
 		@Override
 		public void paint(Graphics2D g) {
 			g.setColor(color);
-			g.fillRect(position.x, position.y, SIZE, SIZE);
+			g.fillRect(x, y, width, height);
 		}
 	}
 
 	public static boolean isEmptyBoundBox(Point p1, Point p2) {
-		return !(Math.abs((p2.x - p1.x)) >= getSizeControlPoint() && Math.abs((p2.y - p1.y)) >= getSizeControlPoint());
+		return (Math.abs((p2.x - p1.x)) <= getSizeControlPoint() && Math.abs((p2.y - p1.y)) <= getSizeControlPoint());
+	}
+
+	public Cardinal getSelectedControlPoint(Point p) {
+		for (ControlPoint cp : cPoint) {
+			if (cp.contains(p)) {
+				return cp.cardinal;
+			}
+		}
+		return null;
 	}
 }

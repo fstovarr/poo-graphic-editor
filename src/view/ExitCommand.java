@@ -20,4 +20,9 @@ public class ExitCommand implements Command {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public int getShortcutKey() {
+		return -1;
+	}
 }

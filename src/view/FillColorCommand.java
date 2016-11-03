@@ -18,4 +18,9 @@ public class FillColorCommand implements Command {
 	public String getName() {
 		return "Fill color";
 	}
+
+	@Override
+	public int getShortcutKey() {
+		return -1;
+	}
 }

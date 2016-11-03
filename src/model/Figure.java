@@ -3,6 +3,7 @@ package model;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 
 import view.BoundBox;
 
@@ -10,6 +11,7 @@ public abstract class Figure implements Shape {
 	private BoundBox boundBox, normalizedBoundBox;
 	private Color color;
 	private boolean selected;
+	private Point referencePoint;
 
 	public Figure(BoundBox boundBox, Color color) {
 		super();
@@ -83,5 +85,25 @@ public abstract class Figure implements Shape {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName();
+	}
+
+	public void move(Point base, Point p) {
+		if (p == null) {
+			referencePoint = null;
+			return;
+		} else if (referencePoint == null) {
+			referencePoint = new Point((int) (base.getX() - boundBox.x + 0.5), (int) (base.getY() - boundBox.y + 0.5));
+		}
+
+		boundBox.setLocation(p.x - referencePoint.x, p.y - referencePoint.y);
+	}
+
+	public void resize(Point point) {
+		boundBox.width += point.x;
+		boundBox.height += point.y;
+		
+		if (needsNormalization()) {
+			this.boundBox.normalize();
+		}
 	}
 }

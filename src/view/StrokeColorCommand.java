@@ -18,4 +18,9 @@ public class StrokeColorCommand implements Command {
 	public String getName() {
 		return "Stroke color";
 	}
+
+	@Override
+	public int getShortcutKey() {
+		return -1;
+	}
 }

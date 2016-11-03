@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.KeyEvent;
+
 import mediator.App;
 
 public class SelectAllCommand implements Command {
@@ -21,4 +23,8 @@ public class SelectAllCommand implements Command {
 		return name;
 	}
 
+	@Override
+	public int getShortcutKey() {
+		return KeyEvent.VK_A;
+	}
 }
