@@ -12,7 +12,9 @@ public class Ellipse extends ClosedFigure {
 
 	@Override
 	public void doPaint(Graphics2D g) {
-		BoundBox bbox = getBoundBox();
+		BoundBox bbox = getNormalizedBoundBox();
+
+		System.out.println("PAINT " + bbox);
 
 		g.setColor(getFillColor());
 		g.fillOval(bbox.x, bbox.y, bbox.width, bbox.height);

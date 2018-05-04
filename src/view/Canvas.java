@@ -23,6 +23,11 @@ public class Canvas extends JPanel implements DrawingListener {
 
 		adapter = new MouseAdapter() {
 			@Override
+			public void mouseMoved(MouseEvent e) {
+				activeTool.mouseMoved(e);
+			}
+
+			@Override
 			public void mousePressed(MouseEvent e) {
 				activeTool.mousePressed(e);
 			}
@@ -35,11 +40,6 @@ public class Canvas extends JPanel implements DrawingListener {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				activeTool.mouseDragged(e);
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				activeTool.mouseMoved(e);
 			}
 		};
 
@@ -62,9 +62,6 @@ public class Canvas extends JPanel implements DrawingListener {
 
 	protected void setActiveTool(Tool activeTool) {
 		this.activeTool = activeTool;
-		if (activeTool instanceof CreationTool) {
-			((CreationTool) activeTool).setListener(this);
-		}
 	}
 
 	protected Tool getActiveTool() {

@@ -3,6 +3,7 @@ package view;
 import java.awt.Point;
 
 import model.Ellipse;
+import model.Figure;
 
 public class EllipseCreationTool extends CreationTool {
 	public EllipseCreationTool() {
@@ -10,7 +11,9 @@ public class EllipseCreationTool extends CreationTool {
 	}
 
 	@Override
-	protected void createInitialFigure(Point ptPressed) {
-		setFigure(new Ellipse(new BoundBox(ptPressed.x, ptPressed.y, 0, 0), null, 1, null));
+	protected Figure createFigure(Point ptPressed, Point ptReleased) {
+		return new Ellipse(
+				new BoundBox(ptPressed.x, ptPressed.y, ptReleased.x - ptPressed.x, ptReleased.y - ptPressed.y), null, 1,
+				null);
 	}
 }

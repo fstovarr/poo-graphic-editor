@@ -16,6 +16,7 @@ public class BoundBox extends Rectangle implements Shape {
 
 	public BoundBox(BoundBox box) {
 		this(box.x, box.y, box.width, box.height);
+		initControlPoints();
 	}
 
 	public BoundBox(int x, int y, int width, int height) {
@@ -35,16 +36,28 @@ public class BoundBox extends Rectangle implements Shape {
 		}
 	}
 
-	@Override
-	public void paint(Graphics2D g) {
+	public Point getPosControlPoint(Cardinal cardinal) {
+		for (ControlPoint cp : cPoint) {
+			if (cp.cardinal == cardinal) {
+				return cp.getLocation();
+			}
+		}
+		return null;
+	}
+
+	public void initControlPoints() {
 		for (int i = 0; i < cPoint.length; i++) {
 			cPoint[i] = new ControlPoint(this, Cardinal.values()[i]);
 		}
+	}
+
+	@Override
+	public void paint(Graphics2D g) {
+		initControlPoints();
 
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,
-				new float[] { 10, 2 }, 0.0f));
-
+				new float[] { 10.0f, 2.0f }, 0.0f));
 		graphics.setColor(color);
 		graphics.drawRect(x, y, width, height);
 
@@ -137,12 +150,17 @@ public class BoundBox extends Rectangle implements Shape {
 		return (Math.abs((p2.x - p1.x)) <= getSizeControlPoint() && Math.abs((p2.y - p1.y)) <= getSizeControlPoint());
 	}
 
-	public Cardinal getSelectedControlPoint(Point p) {
+	public Cardinal getFocusedControlPoint(Point p) {
 		for (ControlPoint cp : cPoint) {
 			if (cp.contains(p)) {
 				return cp.cardinal;
 			}
 		}
 		return null;
+	}
+
+	public void moveTo(Point p) {
+		x += p.x;
+		y += p.y;
 	}
 }

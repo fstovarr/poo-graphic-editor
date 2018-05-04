@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import org.reflections.Reflections;
+//import org.reflections.Reflections;
 
 //import org.reflections.Reflections;
 
@@ -43,16 +43,16 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 	@SuppressWarnings(value = { "unused" })
 	private void addAutoTools() {
 		try {
-			Reflections reflections = new Reflections(this.getClass().getPackage());
-			Set<Class<? extends Tool>> classes = reflections.getSubTypesOf(Tool.class);
-			Iterator<Class<? extends Tool>> iterator = classes.iterator();
+			/*Reflections reflections = new Reflections(this.getClass().getPackage());
+			//Set<Class<? extends Tool>> classes = reflections.getSubTypesOf(Tool.class);
+			//Iterator<Class<? extends Tool>> iterator = classes.iterator();
 
 			while (iterator.hasNext()) {
 				Class<? extends Tool> itemToolbar = iterator.next();
 				if (!Modifier.isAbstract(itemToolbar.getModifiers())) {
 					buttons.add(new ToolButton(itemToolbar.newInstance()));
 				}
-			}
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,6 +70,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 		buttons.add(new ToolButton(new RectangleCreationTool()));
 		buttons.add(new ToolButton(new EllipseCreationTool()));
 		buttons.add(new ToolButton(new TextCreationTool()));
+		buttons.add(new ToolButton(new RomboCreationTool()));
 	}
 
 	private void setActions() {
@@ -112,6 +113,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 			this.command = command;
 
 			icon = getResizedIcon(command.getIconPath());
+
 			if (icon == null) {
 				setText(command.getName());
 			} else {
@@ -161,6 +163,9 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 			} else if (this == (ToolButton) obj) {
 				return true;
 			} else if (this.command == ((ToolButton) obj).getCommand()) {
+				return true;
+			} else if (this.command instanceof SelectionTool
+					&& ((ToolButton) obj).getCommand() instanceof SelectionTool) {
 				return true;
 			} else {
 				return false;

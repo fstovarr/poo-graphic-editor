@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,26 +13,32 @@ import java.util.ListIterator;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.UndoableEditSupport;
 
+import mediator.App;
 import view.BoundBox;
+import view.Cardinal;
 import view.DrawingListener;
-import view.DrawingListener.DrawingEvent;
 
-public class Drawing {
+public class Drawing implements DrawingListener {
 	private List<Figure> figures;
 	private List<DrawingListener> listeners;
 	private List<Figure> selectedFigures;
-	private String fileName = null;
+	private String pathFile = null;
 	private UndoManager undoManager;
 	private UndoableEditSupport editSupport;
+	private boolean savedDocument;
+	private boolean modified;
 
 	public Drawing() {
 		figures = new LinkedList<>();
 		selectedFigures = new LinkedList<>();
 		listeners = new LinkedList<>();
+
+		addListener(this);
 
 		undoManager = new UndoManager();
 		editSupport = new UndoableEditSupport();
@@ -45,9 +52,20 @@ public class Drawing {
 		});
 	}
 
+	public void addEdit(UndoableEdit edit) {
+		editSupport.postEdit(edit);
+	}
+
 	public void addFigure(final Figure figure) {
 		figures.add(figure);
 		select(figure);
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void addFigures(List<Figure> figures2) {
+		for (Figure f : figures2) {
+			figures.add(f);
+		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
@@ -82,7 +100,7 @@ public class Drawing {
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
-	public void clear() {
+	public void newFile() {
 		figures.clear();
 		selectedFigures.clear();
 		notifyListeners(DrawingEvent.NEW);
@@ -94,12 +112,11 @@ public class Drawing {
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
-	public boolean hasSelectedFigures() {
-		return !selectedFigures.isEmpty();
-	}
-
-	public List<Figure> getSelectedFigures() {
-		return new LinkedList<>(selectedFigures);
+	public void deleteFigures(List<Figure> figures2) {
+		for (Figure figure : figures2) {
+			figures.remove(figure);
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void deleteSelected() {
@@ -127,7 +144,42 @@ public class Drawing {
 	}
 
 	public String getFileName() {
-		return fileName;
+		if (pathFile == null) {
+			pathFile = FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "/" + App.SUG_FILE_NAME;
+		}
+		return pathFile;
+	}
+
+	public List<Figure> getSelectedFigures() {
+		return new LinkedList<>(selectedFigures);
+	}
+
+	public boolean hasSelectedFigures() {
+		return !selectedFigures.isEmpty();
+	}
+
+	public boolean isSavedDocument() {
+		return savedDocument;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void load(final ObjectInputStream ois, String path) {
+		try {
+			figures = (List<Figure>) ois.readObject();
+			pathFile = path;
+			notifyListeners(DrawingEvent.LOADED);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void moveSelectedFigures(Point p) {
+		for (Figure figure : selectedFigures) {
+			figure.move(p);
+		}
+		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	private void notifyListeners(DrawingEvent event) {
@@ -136,9 +188,31 @@ public class Drawing {
 		}
 	}
 
+	public void redo() {
+		if (undoManager.canRedo()) {
+			undoManager.redo();
+		}
+	}
+
 	private void removeFigure(final Figure figure) {
 		figures.remove(figure);
 		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void resizeFigure(Point point, Figure figure, Cardinal cardinal) {
+		figure.resize(point, cardinal);
+		notifyListeners(DrawingEvent.MODIFIED);
+	}
+
+	public void save(final ObjectOutputStream oos, String path) {
+		try {
+			oos.writeObject(figures);
+			pathFile = path;
+			notifyListeners(DrawingEvent.SAVED);
+		} catch (IOException e) {
+			e.printStackTrace();
+			notifyListeners(DrawingEvent.MODIFIED);
+		}
 	}
 
 	private void select(BoundBox box) {
@@ -192,71 +266,44 @@ public class Drawing {
 		}
 	}
 
-	public void save() {
-		notifyListeners(DrawingEvent.SAVED);
-	}
-
-	public void moveSelectedFigures(Point base, Point p) {
-		for (Figure figure : selectedFigures) {
-			figure.move(base, p);
-		}
-		notifyListeners(DrawingEvent.MODIFIED);
-	}
-
-	public void resizeSelectedFigure(Point point) {
-		selectedFigures.get(0).resize(point);
-		notifyListeners(DrawingEvent.MODIFIED);
-	}
-
 	public void undo() {
 		if (undoManager.canUndo()) {
 			undoManager.undo();
 		}
 	}
 
-	public void redo() {
-		if (undoManager.canRedo()) {
-			undoManager.redo();
+	@Override
+	public void update(DrawingEvent event) {
+		switch (event) {
+		case SAVED:
+			savedDocument = true;
+			modified = false;
+			break;
+		case MODIFIED:
+			modified = true;
+			break;
+		case LOADED:
+			savedDocument = true;
+			modified = false;
+			break;
+		case UNDO_REDO:
+			modified = undoManager.canUndo();
+			break;
+		case NEW:
+			savedDocument = false;
+			modified = false;
+			break;
+		default:
+			break;
 		}
 	}
 
-	public void addEdit(UndoableEdit edit) {
-		editSupport.postEdit(edit);
+	public boolean isChanged() {
+		return modified;
 	}
 
-	public void addFigures(List<Figure> figures2) {
-		for (Figure f : figures2) {
-			figures.add(f);
-		}
-		notifyListeners(DrawingEvent.MODIFIED);
-	}
-
-	public void save(final ObjectOutputStream oos, String name) {
-		try {
-			oos.writeObject(figures);
-			fileName = name;
-			notifyListeners(DrawingEvent.SAVED);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public void load(final ObjectInputStream ois) {
-		try {
-			figures = (List<Figure>) ois.readObject();
-			notifyListeners(DrawingEvent.LOADED);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteFigures(List<Figure> figures2) {
-		for (Figure figure : figures2) {
-			figures.remove(figure);
-		}
+	public void setFigureDimensions(Figure figure, Dimension dim, Point p) {
+		figure.setDimensions(dim, p);
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 }

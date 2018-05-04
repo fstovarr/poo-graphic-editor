@@ -112,8 +112,9 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 		fileMenu.setMnemonic('F');
 
 		fileElements.add(new MenuItem(new NewFileCommand()));
-		fileElements.add(new MenuItem(new LoadCommand(this)));
-		fileElements.add(new MenuItem(new SaveCommand(this)));
+		fileElements.add(new MenuItem(new OpenCommand(getParent())));
+		fileElements.add(new MenuItem(new SaveCommand(getParent())));
+		fileElements.add(new MenuItem(new SaveAsCommand(getParent())));
 		fileElements.add(new JPopupMenu.Separator());
 		fileElements.add(new MenuItem(new ExitCommand()));
 
@@ -167,6 +168,20 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 			break;
 
 		case DESELECTED:
+			break;
+
+		case SAVED:
+			fileElements.get(2).setEnabled(false);
+			break;
+
+		case MODIFIED:
+			if(!fileElements.get(2).isEnabled()) {
+				fileElements.get(2).setEnabled(true);
+			}
+			break;
+			
+		case NEW:
+			fileElements.get(2).setEnabled(false);
 			break;
 
 		default:

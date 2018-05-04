@@ -3,11 +3,12 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 
-import com.bric.swing.ColorPicker;
+//import com.bric.swing.ColorPicker;
 
 import mediator.App;
 
@@ -35,7 +36,6 @@ public class View extends JFrame implements DrawingListener {
 		bar.init();
 		toolBar.init();
 		canvas.init();
-
 	}
 
 	public Tool getActiveTool() {
@@ -47,7 +47,7 @@ public class View extends JFrame implements DrawingListener {
 	}
 
 	public Color showColorChooser(String title) {
-		return ColorPicker.showDialog(this, title, Color.WHITE, true);
+		return null;//ColorPicker.showDialog(this, title, Color.WHITE, true);
 	}
 
 	public void showThicknessChooser(String title, ActionListener listener) {
@@ -65,17 +65,35 @@ public class View extends JFrame implements DrawingListener {
 
 	@Override
 	public void update(DrawingEvent event) {
-		String fileName = App.getInstance().getFileName();
+		String fileName = App.getInstance().getFilePath();
 
-		if (event == DrawingEvent.NEW) {
+		if (fileName == null) {
 			fileName = App.SUG_FILE_NAME;
 		}
 
-		if (event == DrawingEvent.MODIFIED) {
+		switch (event) {
+		case MODIFIED:
 			setTitle(App.TITLE_APP + " - " + fileName + " *");
-		}
-		if (event == DrawingEvent.SAVED) {
+			break;
+
+		case SAVED:
 			setTitle(App.TITLE_APP + " - " + fileName);
+			break;
+
+		case LOADED:
+			setTitle(App.TITLE_APP + " - " + fileName);
+			break;
+
+		case NEW:
+			setTitle(App.TITLE_APP);
+			break;
+
+		default:
+			break;
 		}
+	}
+
+	public Graphics2D getCanvasGraphics() {
+		return (Graphics2D) canvas.getGraphics();
 	}
 }

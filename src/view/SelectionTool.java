@@ -4,6 +4,7 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
+import java.util.List;
 
 import mediator.App;
 import model.Figure;
@@ -11,7 +12,7 @@ import model.Figure;
 public class SelectionTool extends Tool {
 
 	public SelectionTool() {
-		super("resources/bwicons/selection1.png", "Selection Creation");
+		super("resources/bwicons/selection1.png", "Selection Tool");
 	}
 
 	@Override
@@ -20,6 +21,36 @@ public class SelectionTool extends Tool {
 		Point ptReleased = getPtReleased();
 		App.getInstance().deselectAll();
 		App.getInstance().selectFigure(ptPressed, ptReleased);
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+		Iterator<Figure> iterator = App.getInstance().getFiguresIterator();
+		Point p = e.getPoint();
+
+		while (iterator.hasNext()) {
+			Figure figure = (Figure) iterator.next();
+			Cardinal cardinal = figure.getNormalizedBoundBox().getFocusedControlPoint(p);
+
+			if (figure.isSelected() && cardinal != null) {
+				App.getInstance().setActiveTool(new ResizeTool(figure, cardinal, getPtPressed()));
+				return;
+			}
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+		List<Figure> selected = App.getInstance().getSelectedFigures();
+		for (Figure f : selected) {
+			if (f.getNormalizedBoundBox().contains(getPtPressed())) {
+				App.getInstance().setActiveTool(new MoveTool(getPtPressed()));
+				return;
+			}
+		}
 	}
 
 	@Override
@@ -29,16 +60,15 @@ public class SelectionTool extends Tool {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		super.mouseDragged(e);
-
 		Cursor currentCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 		Iterator<Figure> iterator = App.getInstance().getFiguresIterator();
 		Point p = e.getPoint();
 
 		while (iterator.hasNext()) {
 			Figure figure = (Figure) iterator.next();
-			Cardinal cardinal = figure.getNormalizedBoundBox().getSelectedControlPoint(p);
-			if (cardinal != null) {
+			Cardinal cardinal = figure.getNormalizedBoundBox().getFocusedControlPoint(p);
+
+			if (figure.isSelected() && cardinal != null) {
 				switch (cardinal) {
 				case N:
 					currentCursor = Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR);
@@ -65,7 +95,6 @@ public class SelectionTool extends Tool {
 
 				case SE:
 					currentCursor = Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR);
-					App.getInstance().setActiveTool(new ResizeTool());
 					break;
 
 				case SW:
@@ -75,11 +104,8 @@ public class SelectionTool extends Tool {
 				default:
 					break;
 				}
-			} else if (figure.getBoundBox().contains(p)) {
+			} else if (figure.getNormalizedBoundBox().contains(p)) {
 				currentCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-				App.getInstance().setActiveTool(new MoveTool());
-			} else {
-				App.getInstance().setActiveTool(new SelectionTool());
 			}
 			App.getInstance().setCursor(currentCursor);
 		}

@@ -2,16 +2,17 @@ package model;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
 import view.BoundBox;
+import view.Cardinal;
 
 public abstract class Figure implements Shape {
 	private BoundBox boundBox, normalizedBoundBox;
 	private Color color;
 	private boolean selected;
-	private Point referencePoint;
 
 	public Figure(BoundBox boundBox, Color color) {
 		super();
@@ -22,11 +23,6 @@ public abstract class Figure implements Shape {
 		this.boundBox = boundBox;
 		this.color = color;
 		normalizedBoundBox = new BoundBox(boundBox);
-
-		// Template Method
-		if (needsNormalization()) {
-			this.boundBox.normalize();
-		}
 	}
 
 	protected abstract void doPaint(Graphics2D g);
@@ -56,6 +52,10 @@ public abstract class Figure implements Shape {
 	}
 
 	public BoundBox getNormalizedBoundBox() {
+		if (needsNormalization()) {
+			boundBox.normalize();
+			normalizedBoundBox.normalize();
+		}
 		return normalizedBoundBox;
 	}
 
@@ -87,23 +87,60 @@ public abstract class Figure implements Shape {
 		return this.getClass().getSimpleName();
 	}
 
-	public void move(Point base, Point p) {
-		if (p == null) {
-			referencePoint = null;
-			return;
-		} else if (referencePoint == null) {
-			referencePoint = new Point((int) (base.getX() - boundBox.x + 0.5), (int) (base.getY() - boundBox.y + 0.5));
-		}
-
-		boundBox.setLocation(p.x - referencePoint.x, p.y - referencePoint.y);
+	public void move(Point p) {
+		boundBox.moveTo(p);
 	}
 
-	public void resize(Point point) {
-		boundBox.width += point.x;
-		boundBox.height += point.y;
-		
+	public void resize(Point point, Cardinal cardinal) {
+		switch (cardinal) {
+		case N:
+			boundBox.y += point.y;
+			boundBox.height -= point.y;
+			break;
+		case S:
+			boundBox.height += point.y;
+			break;
+		case E:
+			boundBox.width += point.x;
+			break;
+		case W:
+			boundBox.width -= point.x;
+			boundBox.x += point.x;
+			break;
+		case SE:
+			boundBox.width += point.x;
+			boundBox.height += point.y;
+			break;
+		case SW:
+			boundBox.x += point.x;
+			boundBox.width -= point.x;
+			boundBox.height += point.y;
+			break;
+		case NE:
+			boundBox.y += point.y;
+			boundBox.width += point.x;
+			boundBox.height -= point.y;
+			break;
+		case NW:
+			boundBox.x += point.x;
+			boundBox.y += point.y;
+			boundBox.width -= point.x;
+			boundBox.height -= point.y;
+			break;
+		default:
+			break;
+		}
+
 		if (needsNormalization()) {
 			this.boundBox.normalize();
 		}
 	}
+
+	public void setDimensions(Dimension dim, Point p) {
+		getBoundBox().setSize(dim);
+		getBoundBox().setLocation(p);
+		getNormalizedBoundBox().setSize(dim);
+		getNormalizedBoundBox().setLocation(p);
+	}
+
 }

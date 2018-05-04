@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import mediator.App;
@@ -31,6 +32,6 @@ public class DeleteCommand implements Command {
 
 	@Override
 	public int getShortcutKey() {
-		return -1;
+		return KeyEvent.VK_DELETE;
 	}
 }
