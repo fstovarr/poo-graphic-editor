@@ -8,7 +8,7 @@ import mediator.App;
 import model.Figure;
 
 public class CreationEdit extends AbstractUndoableEdit {
-	private static final long serialVersionUID = 701998355968155274L;
+	private static final long serialVersionUID = 0x9BDFFC91063DE8AL;
 	private Figure figure;
 
 	public CreationEdit(Figure figure) {

@@ -57,6 +57,9 @@ public abstract class Tool extends MouseAdapter implements Command {
 		ptReleased = ptPressed = e.getPoint();
 	}
 
+	/**
+	 * [[SuppressWarningsSpartan]]
+	 */
 	private void drawFeedback(Graphics2D g) {
 		int x = (ptPressed.x < ptReleased.x ? ptPressed.x : ptReleased.x);
 		int y = (ptPressed.y < ptReleased.y ? ptPressed.y : ptReleased.y);

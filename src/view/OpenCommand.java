@@ -22,24 +22,21 @@ public class OpenCommand implements Command {
 
 	@Override
 	public void execute() {
-		if (App.getInstance().checkSavedDocument()) {
-			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory().getPath());
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Graphic files (*.eg)", "eg");
-			chooser.setFileFilter(filter);
-			int result = chooser.showOpenDialog(parent);
-
-			if (result == JFileChooser.APPROVE_OPTION) {
-				File file = chooser.getSelectedFile();
-
-				if (!file.getName().endsWith(".eg")) {
-					JOptionPane.showMessageDialog(parent, "The file " + file.getPath() + " is not supported.", "Alert", JOptionPane.ERROR_MESSAGE);
-					execute();
-					return;
-				}
-				
-				//TODO arreglar load
-				App.getInstance().load(file);
-			}
+		if (!App.getInstance().checkSavedDocument())
+			return;
+		JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory().getPath());
+		chooser.setFileFilter(new FileNameExtensionFilter("Graphic files (*.eg)", "eg"));
+		
+		if (chooser.showOpenDialog(parent) != JFileChooser.APPROVE_OPTION)
+			return;
+		
+		File file = chooser.getSelectedFile();
+		if (file.getName().endsWith(".eg"))
+			App.getInstance().load(file);
+		else {
+			JOptionPane.showMessageDialog(parent, "The file " + file.getPath() + " is not supported.", "Alert",
+					JOptionPane.ERROR_MESSAGE);
+			execute();
 		}
 	}
 

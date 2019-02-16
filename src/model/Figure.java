@@ -15,10 +15,8 @@ public abstract class Figure implements Shape {
 	private boolean selected;
 
 	public Figure(BoundBox boundBox, Color color) {
-		super();
-		if (color == null) {
+		if (color == null)
 			color = Color.BLACK;
-		}
 
 		this.boundBox = boundBox;
 		this.color = color;
@@ -52,10 +50,10 @@ public abstract class Figure implements Shape {
 	}
 
 	public BoundBox getNormalizedBoundBox() {
-		if (needsNormalization()) {
-			boundBox.normalize();
-			normalizedBoundBox.normalize();
-		}
+		if (!needsNormalization())
+			return normalizedBoundBox;
+		boundBox.normalize();
+		normalizedBoundBox.normalize();
 		return normalizedBoundBox;
 	}
 
@@ -77,9 +75,8 @@ public abstract class Figure implements Shape {
 		normalizedBoundBox.width = boundBox.width + thickness;
 		normalizedBoundBox.height = boundBox.height + thickness;
 
-		if (isSelected()) {
+		if (isSelected())
 			getNormalizedBoundBox().paint(g);
-		}
 	}
 
 	@Override
@@ -131,9 +128,8 @@ public abstract class Figure implements Shape {
 			break;
 		}
 
-		if (needsNormalization()) {
+		if (needsNormalization())
 			this.boundBox.normalize();
-		}
 	}
 
 	public void setDimensions(Dimension dim, Point p) {

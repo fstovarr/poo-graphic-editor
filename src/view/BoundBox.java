@@ -9,7 +9,7 @@ import java.awt.Rectangle;
 import model.Shape;
 
 public class BoundBox extends Rectangle implements Shape {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private ControlPoint[] cPoint;
 	private static final Color color = Color.LIGHT_GRAY;
 	private static final int thickness = 1;
@@ -30,25 +30,22 @@ public class BoundBox extends Rectangle implements Shape {
 			x -= width;
 		}
 
-		if (height < 0) {
-			height *= -1;
-			y -= height;
-		}
+		if (height >= 0)
+			return;
+		height *= -1;
+		y -= height;
 	}
 
 	public Point getPosControlPoint(Cardinal cardinal) {
-		for (ControlPoint cp : cPoint) {
-			if (cp.cardinal == cardinal) {
+		for (ControlPoint cp : cPoint)
+			if (cp.cardinal == cardinal)
 				return cp.getLocation();
-			}
-		}
 		return null;
 	}
 
 	public void initControlPoints() {
-		for (int i = 0; i < cPoint.length; i++) {
+		for (int i = 0; i < cPoint.length; ++i)
 			cPoint[i] = new ControlPoint(this, Cardinal.values()[i]);
-		}
 	}
 
 	@Override
@@ -61,15 +58,12 @@ public class BoundBox extends Rectangle implements Shape {
 		graphics.setColor(color);
 		graphics.drawRect(x, y, width, height);
 
-		for (ControlPoint point : cPoint) {
+		for (ControlPoint point : cPoint)
 			point.paint(g);
-		}
 	}
 
 	public void updateSize(Point base, Point point) {
-		int width = point.x - base.x;
-		int height = point.y - base.y;
-
+		int width = point.x - base.x, height = point.y - base.y;
 		this.x = base.x;
 		this.y = base.y;
 
@@ -81,7 +75,7 @@ public class BoundBox extends Rectangle implements Shape {
 	}
 
 	private static class ControlPoint extends Rectangle implements Shape {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1;
 		private static final Color color = Color.BLUE;
 		public static final int SIZE = 7;
 		private final BoundBox bbox;
@@ -91,47 +85,36 @@ public class BoundBox extends Rectangle implements Shape {
 			this.bbox = bbox;
 			this.cardinal = cardinal;
 			setPosition(new Point(bbox.x - SIZE / 2, bbox.y - SIZE / 2));
-			width = SIZE;
-			height = SIZE;
+			height = width = SIZE;
 		}
 
 		private void setPosition(Point position) {
 			switch (cardinal) {
-			case NW:
+			default:
 				break;
-
 			case N:
 				position.x += bbox.width / 2;
 				break;
-
 			case NE:
 				position.x += bbox.width;
 				break;
-
 			case W:
 				position.y += bbox.height / 2;
 				break;
-
 			case E:
 				position.x += bbox.width;
 				position.y += bbox.height / 2;
 				break;
-
 			case SW:
 				position.y += bbox.height;
 				break;
-
 			case S:
 				position.y += bbox.height;
 				position.x += bbox.width / 2;
 				break;
-
 			case SE:
 				position.y += bbox.height;
 				position.x += bbox.width;
-				break;
-
-			default:
 				break;
 			}
 
@@ -147,15 +130,13 @@ public class BoundBox extends Rectangle implements Shape {
 	}
 
 	public static boolean isEmptyBoundBox(Point p1, Point p2) {
-		return (Math.abs((p2.x - p1.x)) <= getSizeControlPoint() && Math.abs((p2.y - p1.y)) <= getSizeControlPoint());
+		return (Math.abs(p2.x - p1.x) <= getSizeControlPoint() && Math.abs(p2.y - p1.y) <= getSizeControlPoint());
 	}
 
 	public Cardinal getFocusedControlPoint(Point p) {
-		for (ControlPoint cp : cPoint) {
-			if (cp.contains(p)) {
+		for (ControlPoint cp : cPoint)
+			if (cp.contains(p))
 				return cp.cardinal;
-			}
-		}
 		return null;
 	}
 

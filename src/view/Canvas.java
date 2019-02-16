@@ -13,12 +13,11 @@ import mediator.App;
 import model.Figure;
 
 public class Canvas extends JPanel implements DrawingListener {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private Tool activeTool = new SelectionTool();
 	private MouseAdapter adapter;
 
 	public Canvas() {
-		super();
 		setBackground(Color.WHITE);
 
 		adapter = new MouseAdapter() {
@@ -54,10 +53,8 @@ public class Canvas extends JPanel implements DrawingListener {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Iterator<Figure> iterator = App.getInstance().getFiguresIterator();
-		while (iterator.hasNext()) {
+		for (Iterator<Figure> iterator = App.getInstance().getFiguresIterator(); iterator.hasNext();)
 			iterator.next().paint((Graphics2D) g);
-		}
 	}
 
 	protected void setActiveTool(Tool activeTool) {

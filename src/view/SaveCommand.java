@@ -17,14 +17,10 @@ public class SaveCommand implements Command {
 
 	@Override
 	public void execute() {
-		boolean saved = App.getInstance().isSavedDocument();
-		boolean changed = App.getInstance().hasDocumentChanged();
-
-		if (!saved) {
+		if (!App.getInstance().isSavedDocument())
 			command.execute();
-		} else if (changed) {
+		else if (App.getInstance().hasDocumentChanged())
 			App.getInstance().save(new File(App.getInstance().getFilePath()));
-		}
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class Drawing implements DrawingListener {
 	private List<Figure> figures;
 	private List<DrawingListener> listeners;
 	private List<Figure> selectedFigures;
-	private String pathFile = null;
+	private String pathFile;
 	private UndoManager undoManager;
 	private UndoableEditSupport editSupport;
 	private boolean savedDocument;
@@ -45,8 +45,7 @@ public class Drawing implements DrawingListener {
 		editSupport.addUndoableEditListener(new UndoableEditListener() {
 			@Override
 			public void undoableEditHappened(UndoableEditEvent e) {
-				UndoableEdit edit = e.getEdit();
-				undoManager.addEdit(edit);
+				undoManager.addEdit(e.getEdit());
 				notifyListeners(DrawingEvent.UNDO_REDO);
 			}
 		});
@@ -63,9 +62,8 @@ public class Drawing implements DrawingListener {
 	}
 
 	public void addFigures(List<Figure> figures2) {
-		for (Figure f : figures2) {
+		for (Figure f : figures2)
 			figures.add(f);
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
@@ -74,29 +72,23 @@ public class Drawing implements DrawingListener {
 	}
 
 	public void changeFillColor(Color color) {
-		for (Figure figure : selectedFigures) {
-			if (figure instanceof ClosedFigure) {
+		for (Figure figure : selectedFigures)
+			if (figure instanceof ClosedFigure)
 				((ClosedFigure) figure).setFillColor(color);
-			}
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void changeStrokeColor(Color color) {
-		for (Figure figure : selectedFigures) {
-			if (figure instanceof ClosedFigure) {
+		for (Figure figure : selectedFigures)
+			if (figure instanceof ClosedFigure)
 				((ClosedFigure) figure).setColor(color);
-			}
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void changeThickness(int thickness) {
-		for (Figure figure : selectedFigures) {
-			if (figure instanceof GeometricFigure) {
+		for (Figure figure : selectedFigures)
+			if (figure instanceof GeometricFigure)
 				((GeometricFigure) figure).setThickness(thickness);
-			}
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
@@ -113,28 +105,23 @@ public class Drawing implements DrawingListener {
 	}
 
 	public void deleteFigures(List<Figure> figures2) {
-		for (Figure figure : figures2) {
+		for (Figure figure : figures2)
 			figures.remove(figure);
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void deleteSelected() {
-		Iterator<Figure> iSelected = selectedFigures.iterator();
-
-		while (iSelected.hasNext()) {
+		for (Iterator<Figure> iSelected = selectedFigures.iterator(); 
+				iSelected.hasNext(); iSelected.remove())
 			removeFigure(iSelected.next());
-			iSelected.remove();
-		}
 
 		notifyListeners(DrawingEvent.DESELECTED);
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	public void deselectAll() {
-		for (Figure figure : figures) {
+		for (Figure figure : figures)
 			figure.setSelected(false);
-		}
 		selectedFigures.clear();
 		notifyListeners(DrawingEvent.DESELECTED);
 	}
@@ -144,9 +131,8 @@ public class Drawing implements DrawingListener {
 	}
 
 	public String getFileName() {
-		if (pathFile == null) {
+		if (pathFile == null)
 			pathFile = FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "/" + App.SUG_FILE_NAME;
-		}
 		return pathFile;
 	}
 
@@ -168,30 +154,25 @@ public class Drawing implements DrawingListener {
 			figures = (List<Figure>) ois.readObject();
 			pathFile = path;
 			notifyListeners(DrawingEvent.LOADED);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void moveSelectedFigures(Point p) {
-		for (Figure figure : selectedFigures) {
+		for (Figure figure : selectedFigures)
 			figure.move(p);
-		}
 		notifyListeners(DrawingEvent.MODIFIED);
 	}
 
 	private void notifyListeners(DrawingEvent event) {
-		for (DrawingListener listener : listeners) {
+		for (DrawingListener listener : listeners)
 			listener.update(event);
-		}
 	}
 
 	public void redo() {
-		if (undoManager.canRedo()) {
+		if (undoManager.canRedo())
 			undoManager.redo();
-		}
 	}
 
 	private void removeFigure(final Figure figure) {
@@ -216,43 +197,34 @@ public class Drawing implements DrawingListener {
 	}
 
 	private void select(BoundBox box) {
-		ListIterator<Figure> iterator = figures.listIterator(figures.size());
-
-		while (iterator.hasPrevious()) {
+		for (ListIterator<Figure> iterator = figures.listIterator(figures.size()); iterator.hasPrevious();) {
 			Figure figure = iterator.previous();
-			BoundBox boxFigure = figure.getNormalizedBoundBox();
-			if (box.contains(boxFigure)) {
+			if (box.contains(figure.getNormalizedBoundBox()))
 				select(figure);
-			}
 		}
 	}
 
 	public void select(Figure figure) {
 		figure.setSelected(true);
 		selectedFigures.add(figure);
-		if (!selectedFigures.isEmpty()) {
+		if (!selectedFigures.isEmpty())
 			notifyListeners(DrawingEvent.SELECTED);
-		}
 	}
 
 	public void select(Point p1, Point p2) {
 		ListIterator<Figure> iterator = figures.listIterator(figures.size());
-		boolean bool = BoundBox.isEmptyBoundBox(p1, p2);
-		if (bool) {
+		if (!BoundBox.isEmptyBoundBox(p1, p2)) {
+			BoundBox box = new BoundBox(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+			box.normalize();
+			select(box);
+		} else
 			while (iterator.hasPrevious()) {
 				Figure figure = iterator.previous();
-				BoundBox boxFigure = figure.getNormalizedBoundBox();
-
-				if (boxFigure.contains(p1)) {
+				if (figure.getNormalizedBoundBox().contains(p1)) {
 					select(figure);
 					break;
 				}
 			}
-		} else {
-			BoundBox box = new BoundBox(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
-			box.normalize();
-			select(box);
-		}
 	}
 
 	public void selectAll() {
@@ -261,30 +233,25 @@ public class Drawing implements DrawingListener {
 			selectedFigures.add(figure);
 		}
 
-		if (!selectedFigures.isEmpty()) {
+		if (!selectedFigures.isEmpty())
 			notifyListeners(DrawingEvent.SELECTED);
-		}
 	}
 
 	public void undo() {
-		if (undoManager.canUndo()) {
+		if (undoManager.canUndo())
 			undoManager.undo();
-		}
 	}
 
 	@Override
 	public void update(DrawingEvent event) {
 		switch (event) {
 		case SAVED:
+		case LOADED:
 			savedDocument = true;
 			modified = false;
 			break;
 		case MODIFIED:
 			modified = true;
-			break;
-		case LOADED:
-			savedDocument = true;
-			modified = false;
 			break;
 		case UNDO_REDO:
 			modified = undoManager.canUndo();

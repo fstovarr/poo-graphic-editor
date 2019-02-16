@@ -43,12 +43,12 @@ public class Line extends GeometricFigure {
 			boundBox.y += point.y;
 			break;
 		case NE:
-			boundBox.height += point.y;
+			boundBox.height -= point.y;
 			boundBox.width += point.x;
 			break;
 		case NW:
-			boundBox.height += point.y;
 			boundBox.width += point.x;
+			boundBox.height += point.y;
 			break;
 		default:
 			break;

@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
 import mediator.App;
 
 public class MenuBarHelper extends JMenuBar implements DrawingListener {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private ArrayList<JComponent> fileElements = new ArrayList<>();
 	private ArrayList<JComponent> editElements = new ArrayList<>();
 	private ArrayList<JComponent> helpElements = new ArrayList<>();
@@ -89,7 +89,7 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 				MenuItem item = ((MenuItem) component);
 
 				Action a = new AbstractAction(item.getCommand().getName()) {
-					private static final long serialVersionUID = 1L;
+					private static final long serialVersionUID = 1;
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -97,10 +97,9 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 					}
 				};
 
-				if (item.getCommand().getShortcutKey() != -1) {
+				if (item.getCommand().getShortcutKey() != -1)
 					a.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(item.getCommand().getShortcutKey(),
 							Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-				}
 
 				item.setAction(a);
 			}
@@ -124,7 +123,7 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 	}
 
 	private class MenuItem extends JMenuItem {
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1;
 		private Command command;
 
 		public MenuItem(Command command) {
@@ -133,13 +132,13 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 		}
 
 		public void apply() {
-			if (command instanceof Tool) {
+			if (!(command instanceof Tool)) {
+				command.execute();
+				setSelected(false);
+			} else {
 				Tool tool = (Tool) command;
 				setSelected(true);
 				App.getInstance().setActiveTool(tool);
-			} else {
-				command.execute();
-				setSelected(false);
 			}
 		}
 
@@ -149,42 +148,23 @@ public class MenuBarHelper extends JMenuBar implements DrawingListener {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof MenuItem)) {
-				return false;
-			} else if (this == (MenuItem) obj) {
-				return true;
-			} else if (this.command == ((MenuItem) obj).getCommand()) {
-				return true;
-			} else {
-				return false;
-			}
+			return obj instanceof MenuItem
+					&& ((MenuItem) obj == this || this.command == ((MenuItem) obj).getCommand());
 		}
 	}
 
 	@Override
 	public void update(DrawingEvent event) {
 		switch (event) {
-		case SELECTED:
+		default:
 			break;
-
-		case DESELECTED:
-			break;
-
 		case SAVED:
-			fileElements.get(2).setEnabled(false);
-			break;
-
-		case MODIFIED:
-			if(!fileElements.get(2).isEnabled()) {
-				fileElements.get(2).setEnabled(true);
-			}
-			break;
-			
 		case NEW:
 			fileElements.get(2).setEnabled(false);
 			break;
-
-		default:
+		case MODIFIED:
+			if (!fileElements.get(2).isEnabled())
+				fileElements.get(2).setEnabled(true);
 			break;
 		}
 	}

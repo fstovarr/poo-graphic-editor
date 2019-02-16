@@ -14,22 +14,16 @@ public abstract class CreationTool extends Tool {
 
 	@Override
 	protected void processMouse() {
-		Point ptPressed = getPtPressed();
-		Point ptReleased = getPtReleased();
-
-		// TEMPLATE
-		// 1. Non empty bounding box
-		if (!BoundBox.isEmptyBoundBox(ptPressed, ptReleased)) {
-			// 2. Create figure
-			Figure figure = createFigure(ptPressed, ptReleased);
-			// 3. Check figure
-			if (figure != null) {
-				App.getInstance().addFigure(figure);
-				App.getInstance().deselectAll();
-				App.getInstance().addEdit(new CreationEdit(figure));
-				App.getInstance().selectFigure(figure);
-			}
-		}
+		Point ptPressed = getPtPressed(), ptReleased = getPtReleased();
+		if (BoundBox.isEmptyBoundBox(ptPressed, ptReleased))
+			return;
+		Figure figure = createFigure(ptPressed, ptReleased);
+		if (figure == null)
+			return;
+		App.getInstance().addFigure(figure);
+		App.getInstance().deselectAll();
+		App.getInstance().addEdit(new CreationEdit(figure));
+		App.getInstance().selectFigure(figure);
 	}
 
 	@Override

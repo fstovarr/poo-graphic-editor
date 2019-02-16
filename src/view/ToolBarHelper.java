@@ -24,7 +24,7 @@ import javax.swing.JToolBar;
 import mediator.App;
 
 public class ToolBarHelper extends JToolBar implements DrawingListener {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private static final String TITLE_TOOLBAR = "Tools";
 	private final ArrayList<JComponent> buttons = new ArrayList<>();
 
@@ -40,22 +40,8 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 		App.getInstance().addDrawingListener(this);
 	}
 
-	@SuppressWarnings(value = { "unused" })
+	@SuppressWarnings("unused")
 	private void addAutoTools() {
-		try {
-			/*Reflections reflections = new Reflections(this.getClass().getPackage());
-			//Set<Class<? extends Tool>> classes = reflections.getSubTypesOf(Tool.class);
-			//Iterator<Class<? extends Tool>> iterator = classes.iterator();
-
-			while (iterator.hasNext()) {
-				Class<? extends Tool> itemToolbar = iterator.next();
-				if (!Modifier.isAbstract(itemToolbar.getModifiers())) {
-					buttons.add(new ToolButton(itemToolbar.newInstance()));
-				}
-			}*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void addManualTools() {
@@ -91,9 +77,8 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 							Tool it = App.getInstance().getActiveTool();
 							int index = buttons.indexOf(new ToolButton(it));
 
-							if (index != -1) {
+							if (index != -1)
 								((ToolButton) buttons.get(index)).setSelected(false);
-							}
 						}
 						selectedTool.apply();
 					}
@@ -105,7 +90,7 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 
 	private class ToolButton extends JToggleButton {
 		private static final int ICON_SIZE = 32;
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1;
 		private Command command;
 		private ImageIcon icon;
 
@@ -114,40 +99,36 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 
 			icon = getResizedIcon(command.getIconPath());
 
-			if (icon == null) {
-				setText(command.getName());
-			} else {
+			if (icon != null)
 				setIcon(icon);
-			}
+			else
+				setText(command.getName());
 		}
 
 		public void apply() {
-			if (command instanceof Tool) {
+			if (!(command instanceof Tool)) {
+				command.execute();
+				setSelected(false);
+			} else {
 				Tool tool = (Tool) command;
 				setSelected(true);
 				App.getInstance().setActiveTool(tool);
-			} else {
-				command.execute();
-				setSelected(false);
 			}
 		}
 
 		private ImageIcon getResizedIcon(String iconPath) {
 			ImageIcon temp = null;
 
-			if (iconPath != null) {
+			if (iconPath != null)
 				try {
 					URL resource = this.getClass().getClassLoader().getResource(iconPath);
-					if (resource != null) {
-						temp = new ImageIcon(
-								ImageIO.read(resource).getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH));
-					} else {
+					if (resource == null)
 						throw new Exception("Icon don't found");
-					}
+					temp = new ImageIcon(
+							ImageIO.read(resource).getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
 
 			return temp;
 		}
@@ -158,25 +139,14 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof ToolButton)) {
-				return false;
-			} else if (this == (ToolButton) obj) {
-				return true;
-			} else if (this.command == ((ToolButton) obj).getCommand()) {
-				return true;
-			} else if (this.command instanceof SelectionTool
-					&& ((ToolButton) obj).getCommand() instanceof SelectionTool) {
-				return true;
-			} else {
-				return false;
-			}
+			return obj instanceof ToolButton && ((ToolButton) obj == this || this.command == ((ToolButton) obj).getCommand()
+					|| this.command instanceof SelectionTool && ((ToolButton) obj).getCommand() instanceof SelectionTool);
 		}
 	}
 
 	private void enableButtons(boolean enable) {
-		for (int i = 2; i <= 5; i++) {
+		for (int i = 2; i <= 5; ++i)
 			buttons.get(i).setEnabled(enable);
-		}
 	}
 
 	@Override
@@ -185,14 +155,9 @@ public class ToolBarHelper extends JToolBar implements DrawingListener {
 		case SELECTED:
 			enableButtons(true);
 			break;
-
 		case DESELECTED:
 			enableButtons(false);
 			break;
-
-		case SAVED:
-			break;
-
 		default:
 			break;
 		}

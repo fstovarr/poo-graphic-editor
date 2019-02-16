@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import mediator.App;
 
 public class View extends JFrame implements DrawingListener {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private Canvas canvas;
 	private MenuBarHelper bar;
 	private ToolBarHelper toolBar;
@@ -65,29 +65,19 @@ public class View extends JFrame implements DrawingListener {
 
 	@Override
 	public void update(DrawingEvent event) {
-		String fileName = App.getInstance().getFilePath();
-
-		if (fileName == null) {
-			fileName = App.SUG_FILE_NAME;
-		}
+		String fileName = App.getInstance().getFilePath() == null ? App.SUG_FILE_NAME : App.getInstance().getFilePath();
 
 		switch (event) {
 		case MODIFIED:
 			setTitle(App.TITLE_APP + " - " + fileName + " *");
 			break;
-
 		case SAVED:
-			setTitle(App.TITLE_APP + " - " + fileName);
-			break;
-
 		case LOADED:
 			setTitle(App.TITLE_APP + " - " + fileName);
 			break;
-
 		case NEW:
 			setTitle(App.TITLE_APP);
 			break;
-
 		default:
 			break;
 		}

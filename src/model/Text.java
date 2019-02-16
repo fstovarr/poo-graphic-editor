@@ -26,7 +26,7 @@ public class Text extends Figure {
 		box.width = fm.stringWidth(text);
 
 		int dim = BoundBox.getSizeControlPoint() / 2;
-		g.setClip(box.x - dim, box.y - dim, box.width + dim * 2, box.height + dim * 2);
+		g.setClip(box.x - dim, box.y - dim, box.width + 2 * dim, box.height + 2 * dim);
 		g.drawString(text, box.x, box.y + (fm.getHeight() / 2 + fm.getDescent()));
 		g.setClip(null);
 	}

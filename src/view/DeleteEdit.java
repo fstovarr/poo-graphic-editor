@@ -10,7 +10,7 @@ import mediator.App;
 import model.Figure;
 
 public class DeleteEdit extends AbstractUndoableEdit {
-	private static final long serialVersionUID = 701998355968155274L;
+	private static final long serialVersionUID = 0x9BDFFC91063DE8AL;
 	private List<Figure> figures;
 
 	public DeleteEdit(List<Figure> figures) {

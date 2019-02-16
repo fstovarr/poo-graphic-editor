@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 
 public class ThicknessPicker extends JDialog {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 	private JSlider js = new JSlider(JSlider.HORIZONTAL, 0, 50, 0);
 	private JLabel label = new JLabel("Thickness");
 	private JButton ok = new JButton("Ok");

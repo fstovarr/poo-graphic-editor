@@ -43,7 +43,6 @@ public class App {
 
 	// Singleton Design Pattern
 	private App() {
-		super();
 		model = new Drawing();
 		view = new View(TITLE_APP);
 		view.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -71,13 +70,12 @@ public class App {
 			e.printStackTrace();
 			// TODO validar errores cuando se guarda
 		} finally {
-			if (oss != null) {
+			if (oss != null)
 				try {
 					oss.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
 		}
 	}
 
@@ -90,13 +88,12 @@ public class App {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (ois != null) {
+			if (ois != null)
 				try {
 					ois.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
 		}
 	}
 
@@ -124,9 +121,8 @@ public class App {
 	}
 
 	public static App getInstance() {
-		if (app == null) {
+		if (app == null)
 			app = new App();
-		}
 		return app;
 	}
 	
@@ -187,50 +183,37 @@ public class App {
 	}
 
 	public void newFile() {
-		if (checkSavedDocument()) {
+		if (checkSavedDocument())
 			model.newFile();
-		}
 	}
 
 	public boolean checkSavedDocument() {
-		if (model.isChanged()) {
-			int result = JOptionPane.showConfirmDialog(view, "Do you like save changes?", "Save",
-					JOptionPane.YES_NO_CANCEL_OPTION);
-			if (result == JOptionPane.YES_OPTION) {
-				SaveCommand saveCommand = new SaveCommand(view);
-				saveCommand.execute();
-				return saveCommand.isSaved();
-			}
-
-			if (result == JOptionPane.NO_OPTION) {
-				return true;
-			}
-
-			if (result == JOptionPane.CANCEL_OPTION) {
-				return false;
-			}
-		}
-		return true;
+		if (!model.isChanged())
+			return true;
+		int result = JOptionPane.showConfirmDialog(view, "Do you like save changes?", "Save",
+				JOptionPane.YES_NO_CANCEL_OPTION);
+		if (result != JOptionPane.YES_OPTION)
+			return (result == JOptionPane.NO_OPTION || result != JOptionPane.CANCEL_OPTION);
+		SaveCommand saveCommand = new SaveCommand(view);
+		saveCommand.execute();
+		return saveCommand.isSaved();
 	}
 
 	public void exit() {
-		if (checkSavedDocument()) {
+		if (checkSavedDocument())
 			System.exit(0);
-		}
 	}
 
 	public void showStrokeColorChooser() {
 		Color color = view.showColorChooser("Choose a stroke color");
-		if (color != null) {
+		if (color != null)
 			model.changeStrokeColor(color);
-		}
 	}
 
 	public void showFillColorChooser() {
 		Color color = view.showColorChooser("Choose a fill color");
-		if (color != null) {
+		if (color != null)
 			model.changeFillColor(color);
-		}
 	}
 
 	public void deleteFigure(Figure figure) {
@@ -250,9 +233,8 @@ public class App {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int thickness = view.getThicknessValue();
-				if (thickness > 0) {
+				if (thickness > 0)
 					model.changeThickness(thickness);
-				}
 			}
 		});
 	}
